@@ -50,17 +50,23 @@ class _SignupState extends State<Signup> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 100,
+                    height: 90,
                   ),
-                  Center(
-                    child: Text(
-                      "Create your account",
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontFamily: "Poppins",
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black),
-                    ),
+                  Text(
+                    "Sign Up",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  ),
+                  Text(
+                    "Create your account",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey),
                   ),
 
                   SizedBox(

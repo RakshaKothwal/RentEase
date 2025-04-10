@@ -30,23 +30,40 @@ class _FilterState extends State<Filter> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        titleSpacing: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          "Filter",
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              fontFamily: "Poppins",
-              color: Colors.black),
-        ),
-      ),
-      body: Column(
+    return
+        // Scaffold(
+        // backgroundColor: Colors.white,
+        // // appBar: appbar(data: "Filter"),
+        // appBar: AppBar(
+        //   titleSpacing: 0,
+        //   backgroundColor: Colors.white,
+        //   title: Text(
+        //     "Filter",
+        //     style: TextStyle(
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.w500,
+        //         fontFamily: "Poppins",
+        //         color: Colors.black),
+        //   ),
+        // ),
+        // body:
+        SizedBox(
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 16, bottom: 14),
+            child: Text(
+              "Filter",
+              style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "Poppins",
+                  color: Colors.black),
+            ),
+          ),
+
           SizedBox(
             height: 12,
           ),
@@ -367,5 +384,6 @@ class _FilterState extends State<Filter> {
         ],
       ),
     );
+    // );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+
+import '../view/navbar.dart';
 
 //for horizontal padding
 EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 16);
@@ -105,6 +108,21 @@ Widget submit({required String data, required void Function()? onPressed}) {
   );
 }
 
+//holds icon in the circle shape container in details page
+Widget iconHolder({Widget? child}) {
+  return Container(
+    height: 38,
+    width: 38,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Color(0xff000000).withAlpha((255 * 0.18).toInt()),
+    ),
+    child: Center(
+      child: child,
+    ),
+  );
+}
+
 //for showing message through toast
 Future<bool?> commonToast(String msg) {
   return Fluttertoast.showToast(
@@ -128,6 +146,7 @@ PreferredSizeWidget appbar({
     ),
     scrolledUnderElevation: 0,
     backgroundColor: Colors.white,
+    // titleSpacing: 0,
   );
 }
 
@@ -137,8 +156,8 @@ Widget primaryBox({Widget? child}) {
     width: double.infinity,
     decoration: BoxDecoration(boxShadow: [
       BoxShadow(
-          color: Color(0xff000000).withAlpha((255 * 0.15).toInt()),
-          blurRadius: 10,
+          color: Color(0xff000000).withAlpha((255 * 0.05).toInt()),
+          blurRadius: 6,
           spreadRadius: 0,
           offset: Offset(2, 2))
     ], borderRadius: BorderRadius.circular(20), color: Color(0xffFFFFFF)),
@@ -174,10 +193,216 @@ Widget primaryRow(
         onTap: onTap,
         child: Icon(
           Icons.arrow_forward_ios,
-          size: 24,
+          size: 22,
           color: Colors.black.withAlpha((255 * 0.8).toInt()),
         ),
       )
     ],
   );
 }
+
+//  container in my dormitory page
+Widget dormContainer(
+    {required Widget leading,
+    required String data,
+    double? height,
+    void Function()? onTap}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      height: 100,
+      width: 100,
+      decoration: BoxDecoration(
+          color: Color(0xffFFFFFF),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+                color: Color(0xff000000).withAlpha((255 * 0.25).toInt()),
+                blurRadius: 10,
+                spreadRadius: 0,
+                offset: Offset(1, 1))
+          ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          leading,
+          SizedBox(
+            height: 12,
+          ),
+          Text(
+            data,
+            style: TextStyle(
+                letterSpacing: 0,
+                color: Color(0xff000000).withAlpha((255 * 0.7).toInt()),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Inter"),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+Future<void> customBottomSheet({
+  required BuildContext context,
+  Widget? child,
+  Function(bool)? toggleNavBar,
+}) async {
+  // toggleNavBar!(false);
+  if (toggleNavBar != null) {
+    toggleNavBar(false);
+  }
+
+  // WidgetsBinding.instance.addPostFrameCallback((_) async {
+  if (!context.mounted) return;
+
+  await showModalBottomSheet(
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    // backgroundColor: Color(0xffEDEDED),
+    context: context,
+    builder: (BuildContext context) {
+      return Wrap(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: child,
+          ),
+        ],
+      );
+    },
+  );
+  // if (context.mounted) {
+  if (context.mounted && toggleNavBar != null) {
+    toggleNavBar(true);
+  }
+}
+//   );
+// }
+
+BoxDecoration commonDecoration() {
+  return BoxDecoration(
+      color: Color(0xffFFFFFF),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+            color: Colors.grey.withAlpha((255 * 0.5).toInt()),
+            blurRadius: 2,
+            spreadRadius: 0,
+            offset: Offset(0.5, 0.5)),
+      ]);
+}
+
+Future primaryDialogBox(
+    {required BuildContext context,
+    String? contentText,
+    void Function()? successTap,
+    String? secondaryText,
+    String? successText}) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xffEDEDED),
+          content: Text(contentText!),
+          contentTextStyle: TextStyle(
+              color: Colors.black,
+              fontFamily: "Inter",
+              fontSize: 16,
+              fontWeight: FontWeight.w400),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  secondaryText!,
+                  style: TextStyle(
+                      color: Color(0xffD32F2F),
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600),
+                )),
+            TextButton(
+                onPressed: successTap,
+                child: Text(
+                  successText!,
+                  style: TextStyle(
+                      color: Color(0xffD32F2F),
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600),
+                ))
+          ],
+        );
+      });
+}
+
+InputDecoration inputDecoration({String? hintText}) {
+  return InputDecoration(
+      contentPadding: EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: 10,
+      ),
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.white24,
+      border: commonBorder(),
+      enabledBorder: commonBorder(),
+      disabledBorder: commonBorder(),
+      focusedBorder: commonBorder(width: 1.0, color: Colors.grey.shade500),
+      errorBorder: commonBorder(),
+      focusedErrorBorder:
+          commonBorder(width: 1.0, color: Colors.grey.shade500));
+}
+
+OutlineInputBorder commonBorder(
+    {Color color = Colors.grey, double width = 0.5}) {
+  return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(color: color, width: width));
+}
+// Future customBottomSheet({
+//   required BuildContext context,
+//   Widget? child,
+//   required Function(bool) toggleNavBar,
+// }) {
+//   toggleNavBar(false);
+//
+//   return showModalBottomSheet(
+//       isScrollControlled: true,
+//       backgroundColor: Color(0xffEDEDED),
+//       // backgroundColor: Colors.white,
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Wrap(children: [
+//           SizedBox(
+//             width: double.infinity,
+//             child: child,
+//           ),
+//         ]);
+//       }).whenComplete(() {
+//     toggleNavBar(true); // Show navbar when modal closes
+//   });
+// }
+
+// Future<T?> customBottomSheet<T>({
+//   required BuildContext context,
+//   required Widget child,
+// }) {
+//   return showModalBottomSheet<T>(
+//     backgroundColor: const Color(0xffEDEDED),
+//     context: context,
+//     builder: (BuildContext context) {
+//       return Wrap(
+//         children: [
+//           SizedBox(
+//             width: double.infinity,
+//             child: child,
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

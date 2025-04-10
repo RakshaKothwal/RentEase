@@ -103,51 +103,114 @@ class _DetailsState extends State<Details> {
                 ),
               ),
               SafeArea(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    ),
-                    Spacer(),
-                    IconButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      iconHolder(
+                          child: IconButton(
                         onPressed: () {
-                          setState(() {
-                            isSaved = !isSaved;
-                          });
-                          commonToast(isSaved
-                              ? "Property saved successfully"
-                              : "Saved property has been removed");
-                        },
-                        icon: isSaved
-                            ? Icon(
-                                Icons.bookmark,
-                                size: 26,
-                                color: Colors.white,
-                              )
-                            : Icon(
-                                Icons.bookmark_border,
-                                size: 26,
-                                color: Colors.white,
-                              )),
-                    IconButton(
-                        onPressed: () {
-                          Share.share("Check out this app");
+                          Navigator.pop(context);
                         },
                         icon: Icon(
-                          Icons.share_outlined,
-                          size: 26,
+                          Icons.arrow_back,
                           color: Colors.white,
-                        ))
-                  ],
+                          size: 23,
+                        ),
+                      )),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      //   icon: Icon(
+                      //     Icons.arrow_back,
+                      //     color: Colors.white,
+                      //     size: 30,
+                      //   ),
+                      // ),
+                      Spacer(),
+
+                      // IconButton(
+                      //          onPressed: () {
+                      //            setState(() {
+                      //              isSaved = !isSaved;
+                      //            });
+                      //            commonToast(isSaved
+                      //                ? "Property saved successfully"
+                      //                : "Saved property has been removed");
+                      //          },
+                      //          icon: isSaved
+                      //              ? Icon(
+                      //                  Icons.bookmark,
+                      //                  size: 24,
+                      //                  color: Colors.white,
+                      //                )
+                      //              : Icon(
+                      //                  Icons.bookmark_border,
+                      //                  size: 24,
+                      //                  color: Colors.white,
+                      //                )),
+
+                      iconHolder(
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isSaved = !isSaved;
+                              });
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   SnackBar(
+                              //     content:
+                              //         Text(isSaved ? "saved" : "Not Saved"),
+                              //     duration: Duration(seconds: 2),
+                              //     behavior: SnackBarBehavior.floating,
+                              //     backgroundColor: Color(0xff000000)
+                              //         .withAlpha((255 * 0.70).toInt()),
+                              //   ),
+                              // );
+                              commonToast(isSaved
+                                  ? "Property saved successfully"
+                                  : "Saved property has been removed");
+                            },
+                            icon: isSaved
+                                ? Icon(
+                                    Icons.bookmark,
+                                    size: 23,
+                                    color: Colors.white,
+                                  )
+                                : Icon(
+                                    Icons.bookmark_border,
+                                    size: 23,
+                                    color: Colors.white,
+                                  )),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      // IconButton(
+                      //         onPressed: () {
+                      //           Share.share("Check out this app");
+                      //         },
+                      //         icon: Icon(
+                      //           Icons.share_outlined,
+                      //           size: 22,
+                      //           color: Colors.white,
+                      //         )),
+
+                      iconHolder(
+                        child: IconButton(
+                            onPressed: () {
+                              Share.share("Check out this app");
+                            },
+                            icon: Icon(
+                              Icons.share_outlined,
+                              size: 22,
+                              color: Colors.white,
+                            )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

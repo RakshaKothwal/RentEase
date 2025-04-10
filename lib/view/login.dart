@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rentease/common/global_widget.dart';
 import 'package:rentease/view/dashboard.dart';
+import 'package:rentease/view/navbar.dart';
 import 'package:rentease/view/signup.dart';
 
 class Login extends StatefulWidget {
@@ -171,7 +172,7 @@ class _LoginState extends State<Login> {
                     data: "Login",
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Dashboard()));
+                          MaterialPageRoute(builder: (context) => Navbar()));
                     }),
                 SizedBox(
                   height: 15,

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:rentease/common/global_widget.dart';
+import 'package:rentease/view/edit_profile.dart';
+import 'package:rentease/view/message.dart';
+import 'package:rentease/view/myDormitory.dart';
+import 'package:rentease/view/setting.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -27,19 +32,7 @@ class _ProfileState extends State<Profile> {
                   SizedBox(
                     height: 18,
                   ),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color(0xff000000)
-                                  .withAlpha((255 * 0.15).toInt()),
-                              blurRadius: 10,
-                              spreadRadius: 0,
-                              offset: Offset(2, 2))
-                        ],
-                        borderRadius: BorderRadius.circular(20),
-                        color: Color(0xffFFFFFF)),
+                  primaryBox(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 14, horizontal: 15),
@@ -92,10 +85,20 @@ class _ProfileState extends State<Profile> {
                           ),
                           Spacer(),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              PersistentNavBarNavigator.pushNewScreen(
+                                context,
+                                screen: EditProfile(),
+                                withNavBar: false,
+                              );
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => EditProfile()));
+                            },
                             child: Icon(
                               Icons.arrow_forward_ios,
-                              size: 24,
+                              size: 22,
                               // color: Color(0xff919191),
                               color:
                                   Colors.black.withAlpha((255 * 0.8).toInt()),
@@ -105,6 +108,94 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
+                  // Container(
+                  //   width: double.infinity,
+                  //   decoration: BoxDecoration(
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //             color: Color(0xff000000)
+                  //                 .withAlpha((255 * 0.1).toInt()),
+                  //             blurRadius: 10,
+                  //             spreadRadius: 0,
+                  //             offset: Offset(2, 2))
+                  //       ],
+                  //       borderRadius: BorderRadius.circular(20),
+                  //       color: Color(0xffFFFFFF)),
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(
+                  //         vertical: 14, horizontal: 15),
+                  //     child: Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         CircleAvatar(
+                  //             maxRadius: 30,
+                  //             minRadius: 30,
+                  //             backgroundImage: AssetImage(
+                  //               "assets/images/profile4.png",
+                  //             )),
+                  //         SizedBox(
+                  //           width: 15,
+                  //         ),
+                  //         Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Text(
+                  //               "Raksha Kothwal",
+                  //               style: TextStyle(
+                  //                   color: Colors.black,
+                  //                   fontSize: 16,
+                  //                   fontFamily: "Poppins",
+                  //                   fontWeight: FontWeight.w600),
+                  //             ),
+                  //             // SizedBox(
+                  //             //   height: 1,
+                  //             // ),
+                  //             // Text(
+                  //             //   "rakshakothwal@gmail.com",
+                  //             //   style: TextStyle(
+                  //             //       color: Color(0xff919191),
+                  //             //       fontSize: 12,
+                  //             //       fontFamily: "Poppins",
+                  //             //       fontWeight: FontWeight.w500),
+                  //             // ),
+                  //             SizedBox(
+                  //               height: 2,
+                  //             ),
+                  //             Text(
+                  //               "+91 9837839299",
+                  //               style: TextStyle(
+                  //                   color: Color(0xff919191),
+                  //                   fontSize: 12,
+                  //                   fontFamily: "Poppins",
+                  //                   fontWeight: FontWeight.w500),
+                  //             )
+                  //           ],
+                  //         ),
+                  //         Spacer(),
+                  //         GestureDetector(
+                  //           onTap: () {
+                  //             PersistentNavBarNavigator.pushNewScreen(
+                  //               context,
+                  //               screen: EditProfile(),
+                  //               withNavBar: false,
+                  //             );
+                  //             // Navigator.push(
+                  //             //     context,
+                  //             //     MaterialPageRoute(
+                  //             //         builder: (context) => EditProfile()));
+                  //           },
+                  //           child: Icon(
+                  //             Icons.arrow_forward_ios,
+                  //             size: 22,
+                  //             // color: Color(0xff919191),
+                  //             color:
+                  //                 Colors.black.withAlpha((255 * 0.8).toInt()),
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 20,
                   ),
@@ -126,11 +217,22 @@ class _ProfileState extends State<Profile> {
                           height: 16,
                         ),
                         primaryRow(
-                            icon: Icons.notifications, data: "Notifications"),
+                            icon: Icons.apartment,
+                            data: "My Dormitory",
+                            onTap: () {
+                              PersistentNavBarNavigator.pushNewScreen(context,
+                                  screen: Mydormitory(), withNavBar: false);
+                            }),
                         SizedBox(
                           height: 14,
                         ),
-                        primaryRow(icon: Icons.bookmark, data: "Saved"),
+                        primaryRow(
+                            icon: Icons.messenger_outline,
+                            data: "Message",
+                            onTap: () {
+                              PersistentNavBarNavigator.pushNewScreen(context,
+                                  screen: Message(), withNavBar: false);
+                            }),
                       ],
                     ),
                   )),
@@ -143,7 +245,13 @@ class _ProfileState extends State<Profile> {
                         horizontal: 16, vertical: 20),
                     child: Column(
                       children: [
-                        primaryRow(icon: Icons.settings, data: "Settings"),
+                        GestureDetector(
+                            onTap: () {
+                              PersistentNavBarNavigator.pushNewScreen(context,
+                                  screen: Setting(), withNavBar: false);
+                            },
+                            child: primaryRow(
+                                icon: Icons.settings, data: "Settings")),
                         SizedBox(
                           height: 16,
                         ),
@@ -188,10 +296,17 @@ class _ProfileState extends State<Profile> {
                             ),
                             Spacer(),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                primaryDialogBox(
+                                    context: context,
+                                    contentText:
+                                        "Are you sure you want to logout?",
+                                    successText: "Log Out",
+                                    secondaryText: "Cancel");
+                              },
                               child: Icon(
                                 Icons.arrow_forward_ios,
-                                size: 24,
+                                size: 22,
                                 color: Color(0xffD32F2F),
                               ),
                             )
