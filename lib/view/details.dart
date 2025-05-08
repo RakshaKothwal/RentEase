@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rentease/common/common_form.dart';
+import 'package:rentease/view/book.dart';
+import 'package:rentease/view/enquire.dart';
+import 'package:rentease/view/reviews.dart';
+import 'package:rentease/view/scheduleVisit.dart';
+import 'package:rentease/view/stepForm.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -33,7 +39,7 @@ class _DetailsState extends State<Details> {
     {"AC": "assets/svg/ac.svg"},
     {"TV": "assets/svg/tv.svg"},
     {"Wi-fi": "assets/svg/wifi.svg"},
-    {"Room Cleaning": "assets/svg/roomCleaning.svg"},
+    {"Cleaning": "assets/svg/roomCleaning.svg"},
     {"Fridge": "assets/svg/fridge.svg"},
     {"Water Cooler": "assets/svg/water-dispenser.svg"},
   ];
@@ -114,45 +120,18 @@ class _DetailsState extends State<Details> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 23,
+                        icon: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 23,
+                            ),
+                          ),
                         ),
                       )),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     Navigator.pop(context);
-                      //   },
-                      //   icon: Icon(
-                      //     Icons.arrow_back,
-                      //     color: Colors.white,
-                      //     size: 30,
-                      //   ),
-                      // ),
                       Spacer(),
-
-                      // IconButton(
-                      //          onPressed: () {
-                      //            setState(() {
-                      //              isSaved = !isSaved;
-                      //            });
-                      //            commonToast(isSaved
-                      //                ? "Property saved successfully"
-                      //                : "Saved property has been removed");
-                      //          },
-                      //          icon: isSaved
-                      //              ? Icon(
-                      //                  Icons.bookmark,
-                      //                  size: 24,
-                      //                  color: Colors.white,
-                      //                )
-                      //              : Icon(
-                      //                  Icons.bookmark_border,
-                      //                  size: 24,
-                      //                  color: Colors.white,
-                      //                )),
-
                       iconHolder(
                         child: IconButton(
                             onPressed: () {
@@ -188,16 +167,6 @@ class _DetailsState extends State<Details> {
                       SizedBox(
                         width: 8,
                       ),
-                      // IconButton(
-                      //         onPressed: () {
-                      //           Share.share("Check out this app");
-                      //         },
-                      //         icon: Icon(
-                      //           Icons.share_outlined,
-                      //           size: 22,
-                      //           color: Colors.white,
-                      //         )),
-
                       iconHolder(
                         child: IconButton(
                             onPressed: () {
@@ -344,7 +313,7 @@ class _DetailsState extends State<Details> {
                             "This Dormitory consists of 3 floors, Room type A (vip) is at the top with windows facing outside and towards the corridor.There is also a regular AC cleaning service every 3 months. If you need help, you can contact the guard on the duty 24/7.",
                             style: TextStyle(
                                 color: Color(0xff808080),
-                                fontFamily: "Inter",
+                                fontFamily: "Poppins",
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400),
                           ),
@@ -403,7 +372,7 @@ class _DetailsState extends State<Details> {
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w500,
-                                              fontFamily: "Inter",
+                                              fontFamily: "Poppins",
                                               // color: Color(0xff696969),
                                               color: Color(0xff808080)
                                               // color: Color(0xff474747)
@@ -416,7 +385,7 @@ class _DetailsState extends State<Details> {
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
-                                              fontFamily: "Inter",
+                                              fontFamily: "Poppins",
                                               color:
                                                   Colors.black.withAlpha(200)),
                                         ))
@@ -459,7 +428,7 @@ class _DetailsState extends State<Details> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       mainAxisSpacing: 12,
                                       crossAxisSpacing: 20,
-                                      childAspectRatio: 1.4,
+                                      childAspectRatio: 1.2,
                                       crossAxisCount: 3),
                               itemBuilder: (BuildContext context, int index) {
                                 final amenitiesIndex = amenities[index];
@@ -481,8 +450,6 @@ class _DetailsState extends State<Details> {
                                         width: 30,
                                         colorFilter: ColorFilter.mode(
                                             Colors.grey, BlendMode.srcIn),
-                                        // Color(0xffB2B2B2),
-                                        // BlendMode.srcIn),
                                       ),
                                       SizedBox(
                                         height: 5,
@@ -491,9 +458,7 @@ class _DetailsState extends State<Details> {
                                         title,
                                         style: TextStyle(
                                             color: Color(0xff808080),
-                                            // color: Colors.black.withAlpha(160),
-                                            // color: Color(0xffB2B2B2),
-                                            fontFamily: "Inter",
+                                            fontFamily: "Poppins",
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500),
                                       )
@@ -579,7 +544,7 @@ class _DetailsState extends State<Details> {
                                               color: Color(0xff808080),
                                               // color: Colors.black.withAlpha(160),
                                               // color: Color(0xffB2B2B2),
-                                              fontFamily: "Inter",
+                                              fontFamily: "Poppins",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w500),
                                         ),
@@ -622,6 +587,173 @@ class _DetailsState extends State<Details> {
                           SizedBox(
                             height: 5,
                           ),
+                          Row(
+                            children: [
+                              Text(
+                                "Rating and Reviews",
+                                style: TextStyle(
+                                    color: Colors.black.withAlpha(210),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    fontFamily: "Poppins"),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "4.2",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontFamily: "Poppins",
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black),
+                              ),
+                              SizedBox(
+                                width: 22,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: List.generate(5, (index) {
+                                        return Icon(
+                                          Icons.star,
+                                          size: 26,
+                                          color: Colors.amber,
+                                        );
+                                      })),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    "120 Reviews",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: "Poppins",
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey),
+                                  ),
+                                  // Text(
+                                  //   "View all reviews",
+                                  //   style: TextStyle(
+                                  //       // color: Color(0xff000000),
+                                  //       color: Color(0xffD32F2F),
+                                  //       // color: Color(0xffA8A8A8),
+                                  //       fontWeight: FontWeight.w600,
+                                  //       fontFamily: "Poppins",
+                                  //       fontSize: 12),
+                                  // ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Reviews()));
+                            },
+                            child: Text(
+                              "See all reviews",
+                              style: TextStyle(
+                                  // color: Color(0xff000000),
+                                  color: Color(0xffD32F2F),
+                                  // color: Color(0xffA8A8A8),
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "Poppins",
+                                  fontSize: 12),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 10,
+                      color: Color(0xffF5F5F5),
+                      thickness: 5,
+                    ),
+
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Schedule a visit?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Poppins",
+                                    color: Colors.black.withAlpha(210),
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "You can pick a slot to check out the property",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[700],
+                                    fontFamily: "Poppins",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          submit(
+                            data: "Schedule",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Schedulevisit()),
+                              );
+                            },
+                            // width: 100,
+                            // height: 40,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Divider(
+                      height: 10,
+                      color: Color(0xffF5F5F5),
+                      thickness: 5,
+                    ),
+
+                    Padding(
+                      padding: horizontalPadding,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(
                             "Address",
                             style: TextStyle(
@@ -652,7 +784,7 @@ class _DetailsState extends State<Details> {
                                   style: TextStyle(
                                       color: Color(0xff808080),
                                       // color: Color(0xff2A2B3F),
-                                      fontFamily: "Inter",
+                                      fontFamily: "Poppins",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400),
                                 ),
@@ -693,7 +825,7 @@ class _DetailsState extends State<Details> {
                                         color: Colors.black.withAlpha(120),
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
-                                        fontFamily: "Inter"),
+                                        fontFamily: "Poppins"),
                                   ),
                                 ),
                               ),
@@ -705,9 +837,40 @@ class _DetailsState extends State<Details> {
                         ],
                       ),
                     ),
+
                     Padding(
                       padding: horizontalPadding,
-                      child: submit(data: "Contact Owner", onPressed: () {}),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: submit(
+                                height: 45,
+                                data: "Book",
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Stepform()));
+                                }),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: submit(
+                                height: 45,
+                                data: "Enquire",
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Book()));
+                                }),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 10,

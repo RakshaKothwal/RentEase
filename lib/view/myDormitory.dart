@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:rentease/common/global_widget.dart';
 import 'package:rentease/view/bills.dart';
+import 'package:rentease/view/chat.dart';
 import 'package:rentease/view/my_contract.dart';
 import 'package:rentease/view/myreview.dart';
 
@@ -18,7 +19,8 @@ class _MydormitoryState extends State<Mydormitory> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appbar(data: "My Dormitory"),
+      appBar:
+          appbar(data: "My Dormitory", showBackArrow: true, context: context),
       body: ScrollConfiguration(
         behavior: ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(
@@ -58,6 +60,7 @@ class _MydormitoryState extends State<Mydormitory> {
                       height: 25,
                     ),
                     Row(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(21),
@@ -279,14 +282,6 @@ class _MydormitoryState extends State<Mydormitory> {
                                     builder: (context) => Bills()));
                           },
                           child: dormContainer(
-                              // leading: Icon(
-                              //   Icons.monetization_on,
-                              //   color:
-                              //       Color(0xff000000).withAlpha((255 * 0.8).toInt()),
-                              //   size: 40,
-                              // ),
-                              // height: 12,
-                              // data: "Your Bills"),
                               leading: SvgPicture.asset(
                                 "assets/svg/bill2.svg",
                                 colorFilter: ColorFilter.mode(
@@ -298,13 +293,21 @@ class _MydormitoryState extends State<Mydormitory> {
                               ),
                               data: "Your Bills"),
                         ),
-                        dormContainer(
-                            leading: SvgPicture.asset(
-                              "assets/svg/chat.svg",
-                              height: 36,
-                              width: 30,
-                            ),
-                            data: "Owner Chat")
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Chat()));
+                          },
+                          child: dormContainer(
+                              leading: SvgPicture.asset(
+                                "assets/svg/chat.svg",
+                                height: 36,
+                                width: 30,
+                              ),
+                              data: "Owner Chat"),
+                        )
                       ],
                     )
                   ],

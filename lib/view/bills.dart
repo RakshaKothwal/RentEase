@@ -13,7 +13,7 @@ class _BillsState extends State<Bills> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFFFFFF),
-      appBar: appbar(data: "Your Bills"),
+      appBar: appbar(data: "Your Bills", showBackArrow: true, context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Column(
@@ -133,26 +133,6 @@ class _BillsState extends State<Bills> {
                                           letterSpacing: 0),
                                     ),
                                   ),
-
-                                  //button for already paid one
-                                  // Container(
-                                  //   padding: EdgeInsets.symmetric(
-                                  //       vertical: 6, horizontal: 18),
-                                  //   decoration: BoxDecoration(
-                                  //       color: Color(0xffF5F5F5),
-                                  //       borderRadius: BorderRadius.circular(8),
-                                  //       border: Border.all(
-                                  //           color: Color(0xff919191))),
-                                  //   child: Text(
-                                  //     "Pay",
-                                  //     style: TextStyle(
-                                  //         fontFamily: "Poppins",
-                                  //         fontWeight: FontWeight.w500,
-                                  //         fontSize: 12,
-                                  //         color: Color(0xff919191),
-                                  //         letterSpacing: 0),
-                                  //   ),
-                                  // )
                                 ],
                               ),
                             )

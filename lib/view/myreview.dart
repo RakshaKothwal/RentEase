@@ -15,7 +15,7 @@ class _MyreviewState extends State<Myreview> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFFFFFF),
-      appBar: appbar(data: "My Review"),
+      appBar: appbar(data: "My Review", showBackArrow: true, context: context),
       body: ScrollConfiguration(
         behavior: ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(
@@ -206,49 +206,16 @@ class _MyreviewState extends State<Myreview> {
                     SizedBox(
                       height: 10,
                     ),
-                    TextSelectionTheme(
-                      data: TextSelectionThemeData(
-                        selectionHandleColor: Color(0xffD32F2F),
-                      ),
-                      child: TextFormField(
-                        maxLines: 4,
-                        expands: false,
-                        cursorColor: Color(0xffD32F2F),
-                        style: TextStyle(
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Colors.black,
-                            letterSpacing: 0),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 16),
-                            hintText: "Enter here",
-                            hintStyle: TextStyle(
-                                color: Color(0xffB2B2B2),
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16),
-                            filled: true,
-                            fillColor: Color(0xffF4F6F9),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent)),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent)),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                    BorderSide(color: Colors.transparent))),
-                      ),
+                    input(
+                      hintText: "Enter your detailed review here",
+                      maxLines: 4,
                     ),
                     SizedBox(
                       height: 30,
                     ),
                     submit(
+                        height: 50,
+                        width: double.infinity,
                         data: "Submit",
                         onPressed: () {
                           customBottomSheet(

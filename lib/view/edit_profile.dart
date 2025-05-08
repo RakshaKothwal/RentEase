@@ -17,11 +17,10 @@ class _EditProfileState extends State<EditProfile> {
   File? profileImage;
   @override
   Widget build(BuildContext context) {
-    // final navbarState = context.findAncestorStateOfType<NavbarState>();
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appbar(data: "Edit Profile"),
+      appBar:
+          appbar(data: "Edit Profile", showBackArrow: true, context: context),
       body: ScrollConfiguration(
         behavior: ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(
@@ -72,8 +71,6 @@ class _EditProfileState extends State<EditProfile> {
                       onTap: () {
                         customBottomSheet(
                           context: context,
-                          // toggleNavBar:
-                          // navbarState?.toggleNavBar ?? (bool _) {},
                           child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 10),
@@ -114,74 +111,22 @@ class _EditProfileState extends State<EditProfile> {
                                           ? GestureDetector(
                                               onTap: () {
                                                 Navigator.pop(context);
-                                                showDialog(
+                                                primaryDialogBox(
                                                     context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        titlePadding:
-                                                            EdgeInsets.zero,
-                                                        backgroundColor:
-                                                            Color(0xffEDEDED),
-                                                        content: Text(
-                                                          "Remove profile photo?",
-                                                        ),
-                                                        contentTextStyle:
-                                                            TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontFamily:
-                                                                    "Inter",
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                        actions: [
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xffD32F2F),
-                                                                    fontFamily:
-                                                                        "Poppins",
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              )),
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  profileImage =
-                                                                      null;
-                                                                });
-                                                                Navigator.pop(
-                                                                    context);
-                                                                commonToast(
-                                                                    "Profile photo removed");
-                                                              },
-                                                              child: Text(
-                                                                "Remove",
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xffD32F2F),
-                                                                    fontFamily:
-                                                                        "Poppins",
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              ))
-                                                        ],
-                                                      );
-                                                    });
+                                                    title: Text(
+                                                        "Remove profile photo"),
+                                                    contentText:
+                                                        "Are you sure you want to remove the profile photo?",
+                                                    successText: "Remove",
+                                                    successTap: () {
+                                                      setState(() {
+                                                        profileImage = null;
+                                                      });
+                                                      Navigator.pop(context);
+                                                      commonToast(
+                                                          "Profile photo removed");
+                                                    },
+                                                    unsuccessText: "Cancel");
                                               },
                                               child: Icon(
                                                 Icons.delete,
@@ -321,291 +266,6 @@ class _EditProfileState extends State<EditProfile> {
                                 ],
                               ))),
                         );
-
-                        // showModalBottomSheet(
-                        //     backgroundColor: Color(0xffEDEDED),
-                        //     context: context,
-                        //     builder: (BuildContext context) {
-                        //       return Wrap(
-                        //         // runSpacing: -5,
-                        //         children: [
-                        //           SizedBox(
-                        //             width: double.infinity,
-                        //             child: Padding(
-                        //                 padding: const EdgeInsets.symmetric(
-                        //                     horizontal: 16, vertical: 10),
-                        //                 child: Center(
-                        //                     child: Column(
-                        //                   children: [
-                        //                     SizedBox(
-                        //                       height: 8,
-                        //                     ),
-                        //                     Row(
-                        //                       mainAxisAlignment:
-                        //                           MainAxisAlignment
-                        //                               .spaceBetween,
-                        //                       children: [
-                        //                         GestureDetector(
-                        //                           onTap: () {
-                        //                             Navigator.pop(context);
-                        //                           },
-                        //                           child: Icon(
-                        //                             Icons.close,
-                        //                             color: Colors.grey.shade400,
-                        //                             size: 22,
-                        //                           ),
-                        //                         ),
-                        //                         Center(
-                        //                           child: Text(
-                        //                             "Profile Photo ",
-                        //                             style: TextStyle(
-                        //                               color: Color(
-                        //                                 0xff2A2B3F,
-                        //                               ),
-                        //                               fontWeight:
-                        //                                   FontWeight.w600,
-                        //                               fontFamily: "Montserrat",
-                        //                               fontSize: 18,
-                        //                             ),
-                        //                           ),
-                        //                         ),
-                        //                         profileImage != null
-                        //                             ? GestureDetector(
-                        //                                 onTap: () {
-                        //                                   Navigator.pop(
-                        //                                       context);
-                        //                                   showDialog(
-                        //                                       context: context,
-                        //                                       builder:
-                        //                                           (BuildContext
-                        //                                               context) {
-                        //                                         return AlertDialog(
-                        //                                           titlePadding:
-                        //                                               EdgeInsets
-                        //                                                   .zero,
-                        //                                           backgroundColor:
-                        //                                               Color(
-                        //                                                   0xffEDEDED),
-                        //                                           content: Text(
-                        //                                             "Remove profile photo?",
-                        //                                           ),
-                        //                                           contentTextStyle: TextStyle(
-                        //                                               color: Colors
-                        //                                                   .black,
-                        //                                               fontFamily:
-                        //                                                   "Inter",
-                        //                                               fontSize:
-                        //                                                   16,
-                        //                                               fontWeight:
-                        //                                                   FontWeight
-                        //                                                       .w400),
-                        //                                           actions: [
-                        //                                             TextButton(
-                        //                                                 onPressed:
-                        //                                                     () {
-                        //                                                   Navigator.pop(
-                        //                                                       context);
-                        //                                                 },
-                        //                                                 child:
-                        //                                                     Text(
-                        //                                                   "Cancel",
-                        //                                                   style: TextStyle(
-                        //                                                       color: Color(0xffD32F2F),
-                        //                                                       fontFamily: "Poppins",
-                        //                                                       fontSize: 12,
-                        //                                                       fontWeight: FontWeight.w600),
-                        //                                                 )),
-                        //                                             TextButton(
-                        //                                                 onPressed:
-                        //                                                     () {
-                        //                                                   setState(
-                        //                                                       () {
-                        //                                                     profileImage =
-                        //                                                         null;
-                        //                                                   });
-                        //                                                   Navigator.pop(
-                        //                                                       context);
-                        //                                                   commonToast(
-                        //                                                       "Profile photo removed");
-                        //                                                 },
-                        //                                                 child:
-                        //                                                     Text(
-                        //                                                   "Remove",
-                        //                                                   style: TextStyle(
-                        //                                                       color: Color(0xffD32F2F),
-                        //                                                       fontFamily: "Poppins",
-                        //                                                       fontSize: 12,
-                        //                                                       fontWeight: FontWeight.w600),
-                        //                                                 ))
-                        //                                           ],
-                        //                                         );
-                        //                                       });
-                        //                                 },
-                        //                                 child: Icon(
-                        //                                   Icons.delete,
-                        //                                   color: Colors
-                        //                                       .grey.shade400,
-                        //                                   size: 22,
-                        //                                 ),
-                        //                               )
-                        //                             : SizedBox.shrink()
-                        //                       ],
-                        //                     ),
-                        //                     SizedBox(
-                        //                       height: 20,
-                        //                     ),
-                        //                     Row(
-                        //                       mainAxisAlignment:
-                        //                           MainAxisAlignment.center,
-                        //                       children: [
-                        //                         Column(
-                        //                           children: [
-                        //                             GestureDetector(
-                        //                               onTap: () async {
-                        //                                 Navigator.pop(context);
-                        //                                 final pickedImage =
-                        //                                     await ImagePicker()
-                        //                                         .pickImage(
-                        //                                   maxWidth: 600,
-                        //                                   maxHeight: 600,
-                        //                                   source: ImageSource
-                        //                                       .camera,
-                        //                                   // imageQuality: 50
-                        //                                 );
-                        //
-                        //                                 if (pickedImage !=
-                        //                                     null) {
-                        //                                   setState(() {
-                        //                                     profileImage = File(
-                        //                                         pickedImage
-                        //                                             .path);
-                        //                                   });
-                        //                                   commonToast(
-                        //                                       "Profile Photo successfully added");
-                        //                                 }
-                        //                               },
-                        //                               child: Container(
-                        //                                 decoration: BoxDecoration(
-                        //                                     shape:
-                        //                                         BoxShape.circle,
-                        //                                     border: Border.all(
-                        //                                         color: Colors
-                        //                                             .grey
-                        //                                             .shade300)),
-                        //                                 child: Padding(
-                        //                                   padding:
-                        //                                       const EdgeInsets
-                        //                                           .symmetric(
-                        //                                           vertical: 10,
-                        //                                           horizontal:
-                        //                                               12),
-                        //                                   child: Center(
-                        //                                     child: Icon(
-                        //                                       Icons.camera_alt,
-                        //                                       color: Color(
-                        //                                         0xffD32F2F,
-                        //                                       ),
-                        //                                       size: 30,
-                        //                                     ),
-                        //                                   ),
-                        //                                 ),
-                        //                               ),
-                        //                             ),
-                        //                             SizedBox(
-                        //                               height: 2,
-                        //                             ),
-                        //                             Text(
-                        //                               "Camera",
-                        //                               style: TextStyle(
-                        //                                   color:
-                        //                                       Color(0xffA1A0A0),
-                        //                                   fontWeight:
-                        //                                       FontWeight.w500,
-                        //                                   fontSize: 13,
-                        //                                   fontFamily:
-                        //                                       'Poppins'),
-                        //                             )
-                        //                           ],
-                        //                         ),
-                        //                         SizedBox(
-                        //                           width: 50,
-                        //                         ),
-                        //                         Column(
-                        //                           children: [
-                        //                             GestureDetector(
-                        //                               onTap: () async {
-                        //                                 Navigator.pop(context);
-                        //                                 final pickedImage =
-                        //                                     await ImagePicker()
-                        //                                         .pickImage(
-                        //                                             source: ImageSource
-                        //                                                 .gallery);
-                        //                                 if (pickedImage !=
-                        //                                     null) {
-                        //                                   setState(() {
-                        //                                     profileImage = File(
-                        //                                         pickedImage
-                        //                                             .path);
-                        //                                   });
-                        //                                   commonToast(
-                        //                                       "Profile Photo successfully added");
-                        //                                 }
-                        //                               },
-                        //                               child: Container(
-                        //                                 decoration: BoxDecoration(
-                        //                                     shape:
-                        //                                         BoxShape.circle,
-                        //                                     border: Border.all(
-                        //                                         color: Colors
-                        //                                             .grey
-                        //                                             .shade300)),
-                        //                                 child: Padding(
-                        //                                   padding:
-                        //                                       const EdgeInsets
-                        //                                           .symmetric(
-                        //                                           vertical: 10,
-                        //                                           horizontal:
-                        //                                               12),
-                        //                                   child: Center(
-                        //                                     child: Icon(
-                        //                                       Icons
-                        //                                           .photo_library,
-                        //                                       color: Color(
-                        //                                         0xffD32F2F,
-                        //                                       ),
-                        //                                       size: 30,
-                        //                                     ),
-                        //                                   ),
-                        //                                 ),
-                        //                               ),
-                        //                             ),
-                        //                             SizedBox(
-                        //                               height: 2,
-                        //                             ),
-                        //                             Text(
-                        //                               "Gallery",
-                        //                               style: TextStyle(
-                        //                                   color:
-                        //                                       Color(0xffA1A0A0),
-                        //                                   fontWeight:
-                        //                                       FontWeight.w500,
-                        //                                   fontSize: 13,
-                        //                                   fontFamily:
-                        //                                       'Poppins'),
-                        //                             )
-                        //                           ],
-                        //                         )
-                        //                       ],
-                        //                     ),
-                        //                     SizedBox(
-                        //                       height: 10,
-                        //                     ),
-                        //                   ],
-                        //                 ))),
-                        //           )
-                        //         ],
-                        //       );
-                        //     });
                       },
                       child: Center(
                           child: Text(
@@ -614,7 +274,7 @@ class _EditProfileState extends State<EditProfile> {
                             : "Add profile photo",
                         style: TextStyle(
                             color: Color(0xffD32F2F),
-                            fontFamily: "Inter",
+                            fontFamily: "Poppins",
                             fontSize: 14,
                             fontWeight: FontWeight.w600),
                       ))),
@@ -636,7 +296,12 @@ class _EditProfileState extends State<EditProfile> {
                   SizedBox(
                     height: 20,
                   ),
-                  submit(data: "Save Changes", onPressed: () {}),
+                  submit(
+                    data: "Save Changes",
+                    onPressed: () {},
+                    width: double.infinity,
+                    height: 50,
+                  ),
                 ],
               ),
             ),

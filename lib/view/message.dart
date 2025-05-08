@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:rentease/common/global_widget.dart';
+import 'package:rentease/view/chat.dart';
 
 class Message extends StatefulWidget {
   const Message({super.key});
@@ -44,84 +46,90 @@ class _MessageState extends State<Message> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: CircleAvatar(
-                                maxRadius: 28,
-                                minRadius: 28,
-                                backgroundImage: AssetImage(
-                                  profiles[index],
-                                )),
-                          ),
-                          SizedBox(
-                            width: 14,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  name[index],
-                                  style: TextStyle(
-                                      color: Color(0xff000000),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Poppins"),
-                                ),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Text(
-                                  "Can we have a room",
-                                  softWrap: true,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      color: Color(0xff919191),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "Poppins"),
-                                )
-                              ],
+                      child: GestureDetector(
+                        onTap: () {
+                          PersistentNavBarNavigator.pushNewScreen(context,
+                              screen: Chat(), withNavBar: false);
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: CircleAvatar(
+                                  maxRadius: 28,
+                                  minRadius: 28,
+                                  backgroundImage: AssetImage(
+                                    profiles[index],
+                                  )),
                             ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: Color(0xffD32F2F),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  "1",
-                                  style: TextStyle(
-                                    color: Color(0xffFFFFFF),
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 10,
+                            SizedBox(
+                              width: 14,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    name[index],
+                                    style: TextStyle(
+                                        color: Color(0xff000000),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "Poppins"),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    "Can we have a room",
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Color(0xff919191),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Poppins"),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffD32F2F),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    "1",
+                                    style: TextStyle(
+                                      color: Color(0xffFFFFFF),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 10,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 14,
-                              ),
-                              Text(
-                                "10 min ago",
-                                style: TextStyle(
-                                    color: Color(0xff919191),
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: "Poppins"),
-                              ),
-                            ],
-                          )
-                        ],
+                                SizedBox(
+                                  height: 14,
+                                ),
+                                Text(
+                                  "10 min ago",
+                                  style: TextStyle(
+                                      color: Color(0xff919191),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: "Poppins"),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     );
                   },

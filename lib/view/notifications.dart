@@ -13,7 +13,8 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appbar(data: "Notifications"),
+      appBar:
+          appbar(data: "Notifications", showBackArrow: true, context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(

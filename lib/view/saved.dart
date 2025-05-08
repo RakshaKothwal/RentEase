@@ -19,16 +19,6 @@ class _SavedState extends State<Saved> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appbar(data: "Saved"),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   centerTitle: true,
-      //   scrolledUnderElevation: 0,
-      //   title: Text(
-      //     "Saved",
-      //     style: TextStyle(
-      //         fontWeight: FontWeight.w600, fontSize: 18, fontFamily: "Poppins"),
-      //   ),
-      // ),
       body: Column(
         children: [
           SizedBox(
@@ -140,117 +130,133 @@ class _SavedState extends State<Saved> {
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black),
                                   ),
-                                  // Text("hello")
                                   GestureDetector(
                                       onTap: () {
-                                        customBottomSheet(
-                                          context: context,
-                                          toggleNavBar:
-                                              navbarState?.toggleNavBar ??
-                                                  (bool _) {},
-
-                                          // showModalBottomSheet(
-                                          //     backgroundColor: Color(0xffEDEDED),
-                                          //     // backgroundColor: Colors.white,
-                                          //     context: context,
-                                          //     builder: (BuildContext context) {
-                                          //       return Wrap(children: [
-                                          //         SizedBox(
-                                          //           width: double.infinity,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 10),
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Remove from Saved?",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontFamily:
-                                                            "Montserrat",
-                                                        fontSize: 20,
-                                                        color:
-                                                            Color(0xff2A2B3F)),
-                                                  ),
-                                                  SizedBox(height: 12),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            style: TextButton
-                                                                .styleFrom(
-                                                              backgroundColor:
-                                                                  Color(
-                                                                      0xffD32F2F),
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              20)),
-                                                            ),
-                                                            child: Text(
-                                                              "Cancel",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontFamily:
-                                                                      "Montserrat",
-                                                                  fontSize: 16,
-                                                                  color: Colors
-                                                                      .white),
-                                                            )),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 15,
-                                                      ),
-                                                      Expanded(
-                                                        child: TextButton(
-                                                            onPressed: () {},
-                                                            style: TextButton
-                                                                .styleFrom(
-                                                              backgroundColor:
-                                                                  Color(
-                                                                      0xffD32F2F),
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              20)),
-                                                            ),
-                                                            child: Text(
-                                                              "Yes, Remove",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontFamily:
-                                                                      "Montserrat",
-                                                                  fontSize: 16,
-                                                                  color: Colors
-                                                                      .white),
-                                                            )),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                        //     ),
-                                        //   ]);
-                                        // });
+                                        primaryDialogBox(
+                                            context: context,
+                                            title: Text("Remove from Saved"),
+                                            contentText:
+                                                "Are you sure you want to remove this property from your saved list?",
+                                            successText: "Remove",
+                                            unsuccessText: "Cancel");
                                       },
                                       child: Icon(Icons.more_vert))
+                                  //
+                                  // Text("hello")
+                                  // GestureDetector(
+                                  //     onTap: () {
+                                  //       customBottomSheet(
+                                  //         context: context,
+                                  //         toggleNavBar:
+                                  //             navbarState?.toggleNavBar ??
+                                  //                 (bool _) {},
+                                  //
+                                  //         // showModalBottomSheet(
+                                  //         //     backgroundColor: Color(0xffEDEDED),
+                                  //         //     // backgroundColor: Colors.white,
+                                  //         //     context: context,
+                                  //         //     builder: (BuildContext context) {
+                                  //         //       return Wrap(children: [
+                                  //         //         SizedBox(
+                                  //         //           width: double.infinity,
+                                  //         child: Padding(
+                                  //           padding: const EdgeInsets.symmetric(
+                                  //               horizontal: 16, vertical: 10),
+                                  //           child: Center(
+                                  //             child: Column(
+                                  //               mainAxisAlignment:
+                                  //                   MainAxisAlignment.center,
+                                  //               children: [
+                                  //                 Text(
+                                  //                   "Remove from Saved?",
+                                  //                   style: TextStyle(
+                                  //                       fontWeight:
+                                  //                           FontWeight.bold,
+                                  //                       fontFamily:
+                                  //                           "Montserrat",
+                                  //                       fontSize: 20,
+                                  //                       color:
+                                  //                           Color(0xff2A2B3F)),
+                                  //                 ),
+                                  //                 SizedBox(height: 12),
+                                  //                 Row(
+                                  //                   children: [
+                                  //                     Expanded(
+                                  //                       child: TextButton(
+                                  //                           onPressed: () {
+                                  //                             Navigator.pop(
+                                  //                                 context);
+                                  //                           },
+                                  //                           style: TextButton
+                                  //                               .styleFrom(
+                                  //                             backgroundColor:
+                                  //                                 // Colors.white,
+                                  //                                 Color(
+                                  //                                     0xffD32F2F),
+                                  //                             shape: RoundedRectangleBorder(
+                                  //                                 borderRadius:
+                                  //                                     BorderRadius
+                                  //                                         .circular(
+                                  //                                             20)),
+                                  //                           ),
+                                  //                           child: Text(
+                                  //                             "Cancel",
+                                  //                             style: TextStyle(
+                                  //                               fontWeight:
+                                  //                                   FontWeight
+                                  //                                       .w600,
+                                  //                               fontFamily:
+                                  //                                   "Montserrat",
+                                  //                               fontSize: 16,
+                                  //                               color: Colors
+                                  //                                   .white,
+                                  //                               // color: Color(
+                                  //                               //     0xffD32F2F),
+                                  //                             ),
+                                  //                           )),
+                                  //                     ),
+                                  //                     SizedBox(
+                                  //                       width: 15,
+                                  //                     ),
+                                  //                     Expanded(
+                                  //                       child: TextButton(
+                                  //                           onPressed: () {},
+                                  //                           style: TextButton
+                                  //                               .styleFrom(
+                                  //                             backgroundColor:
+                                  //                                 Color(
+                                  //                                     0xffD32F2F),
+                                  //                             shape: RoundedRectangleBorder(
+                                  //                                 borderRadius:
+                                  //                                     BorderRadius
+                                  //                                         .circular(
+                                  //                                             20)),
+                                  //                           ),
+                                  //                           child: Text(
+                                  //                             "Yes, Remove",
+                                  //                             style: TextStyle(
+                                  //                                 fontWeight:
+                                  //                                     FontWeight
+                                  //                                         .w600,
+                                  //                                 fontFamily:
+                                  //                                     "Montserrat",
+                                  //                                 fontSize: 16,
+                                  //                                 color: Colors
+                                  //                                     .white),
+                                  //                           )),
+                                  //                     )
+                                  //                   ],
+                                  //                 )
+                                  //               ],
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       );
+                                  //       //     ),
+                                  //       //   ]);
+                                  //       // });
+                                  //     },
+                                  //     child: Icon(Icons.more_vert))
                                 ],
                               ),
                               Text(

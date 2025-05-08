@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:rentease/common/global_widget.dart';
+import 'package:rentease/view/changeCity.dart';
 import 'package:rentease/view/details.dart';
 import 'package:rentease/view/filter.dart';
 import 'package:rentease/view/listing.dart';
 import 'package:rentease/view/notifications.dart';
-import 'package:rentease/view/search.dart';
 
 import 'navbar.dart';
 
@@ -33,6 +33,33 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         scrolledUnderElevation: 0,
+        title: GestureDetector(
+          onTap: () {
+            PersistentNavBarNavigator.pushNewScreen(context,
+                screen: Changecity(), withNavBar: false);
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "Surat",
+                style: TextStyle(
+                    color: Colors.black.withAlpha((255 * 0.8).toInt()),
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.w800,
+                    fontSize: 22),
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Colors.black.withAlpha((255 * 0.8).toInt()),
+                size: 24,
+              )
+            ],
+          ),
+        ),
         // leading: SvgPicture.asset(
         //   "assets/svg/menu.svg",
         //   height: 24,
@@ -41,14 +68,14 @@ class _DashboardState extends State<Dashboard> {
         // ),
         // titleSpacing: -5,
         // centerTitle: true,
-        title: Text(
+        /*title: Text(
           "RentEase",
           style: TextStyle(
               color: Color(0xffD32F2F),
               fontFamily: "Montserrat",
               fontWeight: FontWeight.w800,
-              fontSize: 24),
-        ),
+              fontSize: 24),*/
+        // ),
         actions: [
           Stack(
             children: [
@@ -83,7 +110,6 @@ class _DashboardState extends State<Dashboard> {
         toolbarHeight: 60,
         toolbarTextStyle: TextStyle(),
       ),
-      // drawer: Drawer(),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,14 +125,19 @@ class _DashboardState extends State<Dashboard> {
                   Expanded(
                     child: SizedBox(
                       height: 48,
-                      child: TextSelectionTheme(
+                      child:
+                          // input(
+                          //     icon: Icons.search,
+                          //     hintText: "Search through localities"),
+                          TextSelectionTheme(
                         data: TextSelectionThemeData(
                             selectionHandleColor: Color(0xffD32F2F)),
                         child: TextField(
-                          onTap: () {
-                            PersistentNavBarNavigator.pushNewScreen(context,
-                                screen: Search(), withNavBar: false);
-                          },
+                          readOnly: false,
+                          // onTap: () {
+                          //   PersistentNavBarNavigator.pushNewScreen(context,
+                          //       screen: Search(), withNavBar: false);
+                          // },
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -159,18 +190,6 @@ class _DashboardState extends State<Dashboard> {
                           toggleNavBar:
                               navbarState?.toggleNavBar ?? (bool _) {},
                           child: Filter());
-                      // PersistentNavBarNavigator.pushNewScreen(context,
-                      //     screen: Filter(), withNavBar: false);
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) => ()));
-                      // showModalBottomSheet(
-                      //     enableDrag: false,
-                      //     isScrollControlled: true,
-                      //     backgroundColor: Colors.white,
-                      //     context: context,
-                      //     builder: (context) {
-                      //       return Filter();
-                      //     });
                     },
                     child: Container(
                       height: 48,
@@ -284,10 +303,6 @@ class _DashboardState extends State<Dashboard> {
                               onTap: () {
                                 PersistentNavBarNavigator.pushNewScreen(context,
                                     screen: Listing(), withNavBar: false);
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => Listing()));
                               },
                               child: Text(
                                 "View all",
@@ -327,10 +342,6 @@ class _DashboardState extends State<Dashboard> {
                                           context,
                                           screen: Details(),
                                           withNavBar: false);
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => Details()));
                                     },
                                     child: Column(
                                       crossAxisAlignment:
@@ -347,7 +358,6 @@ class _DashboardState extends State<Dashboard> {
                                               "assets/images/room1.png",
                                               fit: BoxFit.fill,
                                             )),
-
                                         SizedBox(
                                           height: 4,
                                         ),
@@ -402,39 +412,10 @@ class _DashboardState extends State<Dashboard> {
                                             ],
                                           ),
                                         ),
-
-                                        // RichText(
-                                        //     text: TextSpan(children: [
-                                        //   TextSpan(
-                                        //     text: "Star Paying Guest\n",
-                                        //     style: TextStyle(
-                                        //         fontFamily: "Roboto",
-                                        //         fontSize: 16,
-                                        //         fontWeight: FontWeight.w400,
-                                        //         color: Colors.black),
-                                        //   ),
-                                        //   TextSpan(
-                                        //     text: "Adajan, Surat",
-                                        //     style: TextStyle(
-                                        //         fontFamily: "Roboto",
-                                        //         fontSize: 14,
-                                        //         fontWeight: FontWeight.w400,
-                                        //         color: Colors.grey[600]),
-                                        //   ),
-                                        // ])),
                                       ],
                                     ),
                                   ),
                                 );
-                                // return Container(
-                                //   width: 250,
-                                //   decoration: BoxDecoration(
-                                //       borderRadius: BorderRadius.circular(10),
-                                //       image: DecorationImage(
-                                //           fit: BoxFit.fill,
-                                //           image:
-                                //               AssetImage("assets/images/room1.png"))),
-                                // );
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) {
@@ -461,14 +442,20 @@ class _DashboardState extends State<Dashboard> {
                                   color: Colors.black),
                             ),
                             Spacer(),
-                            Text(
-                              "View all",
-                              style: TextStyle(
-                                  color: Color(0xffD32F2F),
-                                  // color: Color(0xffA8A8A8),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "Poppins",
-                                  fontSize: 12),
+                            GestureDetector(
+                              onTap: () {
+                                PersistentNavBarNavigator.pushNewScreen(context,
+                                    screen: Listing(), withNavBar: false);
+                              },
+                              child: Text(
+                                "View all",
+                                style: TextStyle(
+                                    color: Color(0xffD32F2F),
+                                    // color: Color(0xffA8A8A8),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Poppins",
+                                    fontSize: 12),
+                              ),
                             )
                           ],
                         ),
@@ -482,76 +469,85 @@ class _DashboardState extends State<Dashboard> {
                           scrollDirection: Axis.vertical,
                           padding: horizontalPadding,
                           itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              width: double.infinity,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 6),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(13),
-                                      child: Image.asset(
-                                        "assets/images/room1.png",
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        width: 80,
-                                        fit: BoxFit.fill,
+                            return GestureDetector(
+                              onTap: () {
+                                PersistentNavBarNavigator.pushNewScreen(context,
+                                    screen: Details(), withNavBar: false);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 6),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(13),
+                                        child: Image.asset(
+                                          "assets/images/room1.png",
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width: 80,
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Star Paying Guest",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "Adajan, Surat",
-                                          style: TextStyle(
-                                              fontFamily: "Poppins",
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey[600]),
-                                        ),
-                                        Spacer(),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.currency_rupee,
-                                              size: 18,
-                                              weight: 900,
-                                              applyTextScaling: true,
-                                              grade: 50,
-                                              color: Color(0xff030201),
-                                            ),
-                                            Text(
-                                              "15,000",
-                                              style: TextStyle(
-                                                  fontFamily: "Poppins",
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Star Paying Guest",
+                                            style: TextStyle(
+                                                fontFamily: "Poppins",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          ),
+                                          Text(
+                                            "Adajan, Surat",
+                                            style: TextStyle(
+                                                fontFamily: "Poppins",
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey[600]),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.currency_rupee,
+                                                size: 18,
+                                                weight: 900,
+                                                applyTextScaling: true,
+                                                grade: 50,
+                                                color: Color(0xff030201),
+                                              ),
+                                              Text(
+                                                "15,000",
+                                                style: TextStyle(
+                                                    fontFamily: "Poppins",
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

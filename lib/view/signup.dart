@@ -1,10 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/services.dart';
 import 'package:rentease/common/global_widget.dart';
 import 'package:rentease/view/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dashboard.dart';
+import '../models/user_model.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -14,10 +18,29 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  final formKey = GlobalKey<FormState>();
+
+  String? errorType;
+
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  bool isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       // appBar: AppBar(
       //   automaticallyImplyLeading: false,
@@ -37,7 +60,7 @@ class _SignupState extends State<Signup> {
       //         color: Colors.black.withAlpha(210),
       //         fontSize: 18,
       //         fontWeight: FontWeight.w600,
-      //         fontFamily: "Inter"),
+      //         fontFamily: "Poppins"),
       //   ),
       // ),
       body: ScrollConfiguration(
@@ -46,6 +69,7 @@ class _SignupState extends State<Signup> {
           child: Padding(
             padding: horizontalPadding,
             child: Form(
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -68,60 +92,184 @@ class _SignupState extends State<Signup> {
                         fontWeight: FontWeight.w400,
                         color: Colors.grey),
                   ),
-
                   SizedBox(
                     height: 30,
                   ),
-                  // SizedBox(
-                  //   height: 100,
-                  // ),
-                  // Center(
-                  //   child: SvgPicture.asset(
-                  //     height: 50,
-                  //     width: 50,
-                  //     "assets/svg/house.svg",
-                  //     colorFilter:
-                  //         ColorFilter.mode(Color(0xffD32F2F), BlendMode.srcIn),
-                  //   ),
-                  // ),
-                  // Center(
-                  //   child: Text(
-                  //     "RentEase",
-                  //     style: TextStyle(
-                  //       fontSize: 32,
-                  //       fontWeight: FontWeight.bold,
-                  //       color: Color(0xffD32F2F),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 35,
-                  // ),
                   label("Full Name"),
-                  input(hintText: "Enter your full name"),
+                  input(
+                    hintText: "Enter your full name",
+                    controller: fullNameController,
+                    keyboardType: TextInputType.name,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(50),
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[A-Za-z\s]'),
+                      ),
+                      FilteringTextInputFormatter.deny(RegExp(r'\s\s')),
+                    ],
+                    validation: (value) {
+                      if (value == null || value.isEmpty) {
+                        errorType ??= "Please enter your name";
+                        return null;
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(
                     height: 10,
                   ),
                   label("Phone Number"),
-                  input(hintText: "Enter your phone number"),
+                  input(
+                    hintText: "Enter your phone number",
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(10),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    validation: (value) {
+                      if (value == null || value.isEmpty) {
+                        errorType ??= "Phone number is required";
+                        return null;
+                      }
+
+                      if (value.length != 10) {
+                        errorType ??= "Phone number must be of 10 digits";
+                        return null;
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(
                     height: 10,
                   ),
                   label("Email"),
-                  input(hintText: "Enter your email"),
+                  input(
+                    hintText: "Enter your email",
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(254),
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'[A-Za-z0-9@._-]')),
+                      FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                    ],
+                    validation: (value) {
+                      if (value == null || value.isEmpty) {
+                        errorType ??= "Email Address is required";
+
+                        return null;
+                      }
+                      final emailRegex =
+                          RegExp(r'^[A-Za-z0-9._-]+@[A-Za-z]+\.[A-Za-z]{2,}$');
+                      if (!emailRegex.hasMatch(value)) {
+                        errorType ??= "Enter a valid email address";
+                        return null;
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-                  label("Create a password"),
-                  input(hintText: "Create Password"),
+                  label(
+                    "Create a password",
+                  ),
+                  input(
+                      hintText: "Create Password",
+                      controller: passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: isObscure,
+                      suffixIcon: passwordIcon(isObscure, () {
+                        setState(() {
+                          isObscure = !isObscure;
+                        });
+                      }),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       isObscure = !isObscure;
+                      //     });
+                      //   },
+                      //   icon: Icon(
+                      //     isObscure ? Icons.visibility : Icons.visibility_off,
+                      //     color: Color(0xffB2B2B2),
+                      //     size: 20,
+                      //   ),
+                      // ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(20),
+                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                      ],
+                      validation: (value) {
+                        if (value == null || value.isEmpty) {
+                          errorType ??= "Password is required";
+                          return null;
+                        } else if (value.length < 6) {
+                          errorType ??=
+                              "Password must be at least 6 characters";
+                          return null;
+                        } else if (!RegExp(r'[A-Za-z]').hasMatch(value)) {
+                          errorType ??= "Password must contain letters";
+                          return null;
+                        } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+                          errorType ??= "Password must contain a digit";
+                          return null;
+                        } else if (!RegExp(r'[@#$%^&+=!_-]').hasMatch(value)) {
+                          errorType ??=
+                              "Password must contain a special character";
+                          return null;
+                        }
+
+                        return null;
+                      }),
                   SizedBox(
                     height: 25,
                   ),
                   submit(
+                      width: double.infinity,
+                      height: 50,
                       data: "Sign Up",
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Login()));
+                      onPressed: () async {
+                        setState(() {
+                          errorType = null;
+                        });
+
+                        if (fullNameController.text.isEmpty &&
+                            phoneController.text.isEmpty &&
+                            emailController.text.isEmpty &&
+                            passwordController.text.isEmpty) {
+                          setState(() {
+                            errorType = "Please enter all fields";
+                          });
+                        }
+
+                        formKey.currentState!.validate();
+                        if (errorType != null) {
+                          commonToast(errorType!);
+                        } else {
+                          UserModel newUser = UserModel(
+                            fullName: fullNameController.text,
+                            email: emailController.text,
+                            phoneNumber: phoneController.text,
+                            password: passwordController.text,
+                          );
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+
+                          await prefs.setString('user', newUser.toJson());
+
+                          log('UserModel created: $newUser', name: 'UserModel');
+                          if (!context.mounted) {
+                            return;
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Login()));
+                          }
+                        }
                       }),
                   SizedBox(
                     height: 40,
@@ -131,7 +279,7 @@ class _SignupState extends State<Signup> {
                       text: TextSpan(
                           text: "Already have an account? ",
                           style: TextStyle(
-                              fontFamily: 'Inter',
+                              fontFamily: 'Poppins',
                               color: Color(0xff000000),
                               fontSize: 12,
                               letterSpacing: 0,
@@ -147,7 +295,7 @@ class _SignupState extends State<Signup> {
                                   },
                                 text: "Sign in now",
                                 style: TextStyle(
-                                    fontFamily: 'Inter',
+                                    fontFamily: 'Poppins',
                                     color: Color(0xffD32F2F),
                                     fontSize: 12,
                                     letterSpacing: 0,

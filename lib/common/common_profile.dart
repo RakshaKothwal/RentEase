@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-//header title of info in myContract page
 Widget header(String data) {
   return Text(
     data,
     style: TextStyle(
-        color: Colors.black,
+        color: Colors.black.withAlpha((255 * 0.8).toInt()),
         fontSize: 15,
         fontFamily: "Poppins",
         fontWeight: FontWeight.w600),
@@ -17,34 +16,43 @@ Widget primaryInfo({
   required String label,
   required String value,
 }) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-          color: Color(0xff000000),
-          fontWeight: FontWeight.w300,
-          letterSpacing: 0,
-          fontSize: 13,
-          fontFamily: "Poppins",
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        //info at left side
+        Text(
+          label,
+          style: TextStyle(
+            color: Color(0xFF666666),
+            // color: Color(0xFF000000),
+            fontWeight: FontWeight.w500,
+
+            letterSpacing: 0,
+            fontSize: 13,
+            fontFamily: "Poppins",
+          ),
         ),
-      ),
-      Text(
-        value,
-        style: TextStyle(
-          color: Color(0xff000000).withAlpha((255 * 0.88).toInt()),
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0,
-          fontSize: 13,
-          fontFamily: "Poppins",
+        //info at right side
+        Text(
+          value,
+          style: TextStyle(
+            color: Color(0xFF000000).withAlpha((255 * 0.75).toInt()),
+            // color: Color(0xFF2D3250),
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0,
+            fontSize: 13,
+            fontFamily: "Poppins",
+          ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 
+// for other submit button in myContract page
 Widget secondarySubmit(
     {required String data, required void Function()? onPressed}) {
   return SizedBox(
