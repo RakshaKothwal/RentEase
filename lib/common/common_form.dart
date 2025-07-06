@@ -13,10 +13,6 @@ Widget sectionTitle({
 }
 
 Widget buildSelectableCard(String title, bool isSelected, VoidCallback onTap) {
-// Widget buildSelectableCard(
-//     {required String title,
-//     required bool isSelected,
-//     required VoidCallback onTap}) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -112,11 +108,11 @@ Widget buildDropdownWithIcon({
           size: 20,
         ),
 
-        // hintStyle: TextStyle(
-        //     color: Color(0xffB2B2B2),
-        //     fontFamily: "Poppins",
-        //     fontWeight: FontWeight.w400,
-        //     fontSize: 10),
+
+
+
+
+
         filled: true,
         fillColor: Color(0xffF5F5F5),
         border: OutlineInputBorder(
@@ -157,43 +153,43 @@ Decoration sectionDecoration() {
   );
 }
 
-// Widget selectableChip({
-//   required String label,
-//   required bool isSelected,
-//   required VoidCallback onTap,
-// }) {
-//   return GestureDetector(
-//     onTap: onTap,
-//     child: Container(
-//       padding: EdgeInsets.symmetric(
-//         horizontal: 16,
-//         vertical: 8,
-//       ),
-//       decoration: isSelected
-//           ? BoxDecoration(
-//               color: Color(0xffD32F2F),
-//               borderRadius: BorderRadius.circular(20),
-//             )
-//           : BoxDecoration(
-//               borderRadius: BorderRadius.circular(20),
-//               border: Border.all(
-//                 color: Color(0xffECECEC),
-//                 width: 1.2,
-//               ),
-//             ),
-//       child: Text(
-//         label,
-//         style: TextStyle(
-//           color: isSelected ? Colors.white : Color(0xff808080),
-//           // Color(0xff606060),
-//           fontFamily: "Poppins",
-//           fontSize: 14,
-//           fontWeight: FontWeight.w400,
-//         ),
-//       ),
-//     ),
-//   );
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Widget selectableChip({
   required String label,
@@ -248,7 +244,7 @@ Widget outlinedSubmit(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        // padding: EdgeInsets.symmetric(vertical: 10),
+
       ),
       child: Text(
         data,

@@ -1,21 +1,25 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:rentease/view/owner_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import 'package:rentease/view/owner_listings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/common_form.dart';
 import '../common/global_widget.dart';
 import '../models/property_listing.dart';
 
 class ListProperty extends StatefulWidget {
-  const ListProperty({super.key});
+  final PropertyListing? property;
+
+  const ListProperty({super.key, this.property});
 
   @override
   State<ListProperty> createState() => _ListPropertyState();
@@ -28,6 +32,7 @@ class _ListPropertyState extends State<ListProperty> {
   int lastStep = 5;
 
   List<File> propertyImages = [];
+  List<String> existingImages = [];
 
   String? errorType;
 
@@ -43,7 +48,7 @@ class _ListPropertyState extends State<ListProperty> {
 
   String? city;
   String? mealAvailability;
-  // String? sharingType;
+
   String? numberOfBedrooms;
   String? numberOfBathrooms;
   String? parkingAvailability;
@@ -120,6 +125,74 @@ class _ListPropertyState extends State<ListProperty> {
   TextEditingController noticePeriodController = TextEditingController();
   TextEditingController totalBedController = TextEditingController();
   TextEditingController additionalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.property != null) {
+      _prefillFormData();
+    }
+  }
+
+  void _prefillFormData() {
+    final property = widget.property!;
+    
+
+    titleController.text = property.title ?? '';
+    descriptionController.text = property.description ?? '';
+    addressController.text = property.address ?? '';
+    landmarkController.text = property.landmark ?? '';
+    cityController.text = property.city ?? '';
+    pinCodeController.text = property.pinCode ?? '';
+    rentController.text = property.expectedRent ?? '';
+    depositController.text = property.securityDeposit ?? '';
+    maintenanceController.text = property.maintenanceCharges ?? '';
+    noticePeriodController.text = property.noticePeriod ?? '';
+    totalBedController.text = property.totalNumberOfBeds?.toString() ?? '';
+
+
+    propertyType = property.propertyType;
+    furnishingStatus = property.furnishingStatus;
+    city = property.city;
+    mealAvailability = property.mealAvailability;
+    numberOfBedrooms = property.numberOfBedrooms?.toString();
+    numberOfBathrooms = property.numberOfBathrooms?.toString();
+    parkingAvailability = property.parkingAvailability;
+    preferredGender = property.preferredGender;
+
+
+    if (property.selectedAmenities != null) {
+      selectedAmenities = List<String>.from(property.selectedAmenities!);
+    }
+    if (property.selectedHouseRules != null) {
+      selectedHouseRules = List<String>.from(property.selectedHouseRules!);
+    }
+    if (property.selectedMeals != null) {
+      selectedMeals = List<String>.from(property.selectedMeals!);
+    }
+    if (property.preferredTenant != null) {
+      preferredTenant = List<String?>.from(property.preferredTenant!);
+    }
+    if (property.sharingType != null) {
+      sharingType = List<String?>.from(property.sharingType!);
+    }
+    
+
+    if (property.propertyImages != null) {
+      existingImages = List<String>.from(property.propertyImages!);
+      print('Loaded ${existingImages.length} existing images for editing');
+      if (existingImages.isNotEmpty) {
+        print('First image data type: ${existingImages.first.runtimeType}');
+        print('First image length: ${existingImages.first.length}');
+        print('First image starts with: ${existingImages.first.substring(0, min(50, existingImages.first.length))}');
+        print('First image contains "data:image": ${existingImages.first.contains("data:image")}');
+        print('First image contains ",": ${existingImages.first.contains(",")}');
+      }
+    } else {
+      print('No existing images found in property');
+    }
+  }
 
   void showAddImageOptions(BuildContext context) {
     customBottomSheet(
@@ -230,9 +303,9 @@ class _ListPropertyState extends State<ListProperty> {
                             });
                             commonToast("Photos successfully added");
                           }
-                          // else {
-                          //   commonToast("No images selected");
-                          // }
+
+
+
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -297,7 +370,7 @@ class _ListPropertyState extends State<ListProperty> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appbar(
-        data: "Add Property Details",
+        data: widget.property != null ? "Edit Property" : "Add Property Details",
         showBackArrow: true,
         context: context,
       ),
@@ -307,7 +380,7 @@ class _ListPropertyState extends State<ListProperty> {
           children: [
             Container(
               height: 100,
-              // padding: EdgeInsets.only(bottom: 10),
+
               decoration: sectionDecoration(),
               child: EasyStepper(
                 enableStepTapping: false,
@@ -333,7 +406,7 @@ class _ListPropertyState extends State<ListProperty> {
                 finishedStepTextColor:
                     Colors.black.withAlpha((255 * 0.9).toInt()),
                 unreachedStepTextColor: Color(0xff808080),
-                // Colors.grey[400],
+
                 showLoadingAnimation: false,
                 steps: [
                   EasyStep(
@@ -396,7 +469,9 @@ class _ListPropertyState extends State<ListProperty> {
             if (activeStep > 0) SizedBox(width: 16),
             Expanded(
               child: submit(
-                data: activeStep == lastStep ? 'Submit' : 'Next',
+                data: activeStep == lastStep 
+                    ? (widget.property != null ? 'Update' : 'Submit') 
+                    : 'Next',
                 onPressed: () async {
                   setState(() {
                     errorType = null;
@@ -478,7 +553,7 @@ class _ListPropertyState extends State<ListProperty> {
                   }
 
                   if (activeStep == 3) {
-                    if (propertyImages.isEmpty) {
+                    if (propertyImages.isEmpty && existingImages.isEmpty) {
                       setState(
                           () => errorType = "Please upload at least one image");
                     }
@@ -504,96 +579,7 @@ class _ListPropertyState extends State<ListProperty> {
                       activeStep++;
                     });
                   } else {
-                    PropertyListing propertyListing = PropertyListing(
-                      propertyType: propertyType,
-                      title: titleController.text,
-                      description: descriptionController.text,
-                      address: addressController.text,
-                      landmark: landmarkController.text,
-                      city: city,
-                      state: stateController.text,
-                      pinCode: pinCodeController.text,
-                      furnishingStatus: furnishingStatus,
-                      preferredTenant: preferredTenant.cast<String>(),
-                      preferredGender: preferredGender,
-                      mealAvailability: mealAvailability,
-                      selectedMeals: selectedMeals.cast<String>(),
-                      sharingType: sharingType.cast<String>(),
-                      numberOfBedrooms: numberOfBedrooms,
-                      numberOfBathrooms: numberOfBathrooms,
-                      parkingAvailability: parkingAvailability,
-                      totalNumberOfBeds: totalBedController.text,
-                      noticePeriod: noticePeriodController.text,
-                      propertyImages:
-                          propertyImages.map((file) => file.path).toList(),
-                      selectedAmenities: selectedAmenities,
-                      selectedHouseRules: selectedHouseRules,
-                      additionalRules: additionalController.text,
-                      expectedRent: rentController.text,
-                      securityDeposit: depositController.text,
-                      maintenanceCharges: maintenanceController.text,
-                    );
-
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    String? jsonString = prefs.getString('property_listings');
-                    List<PropertyListing> propertyList = [];
-
-                    if (jsonString != null) {
-                      List<dynamic> jsonList = jsonDecode(jsonString);
-                      propertyList = jsonList
-                          .map((json) => PropertyListing.fromJson(json))
-                          .toList();
-                    }
-
-                    propertyList.add(propertyListing);
-
-                    String updatedJsonString = jsonEncode(
-                        propertyList.map((e) => e.toJson()).toList());
-                    await prefs.setString(
-                        'property_listings', updatedJsonString);
-                    log("Saved property listings JSON: $updatedJsonString");
-
-                    commonToast("Property submitted successfully!");
-
-                    if (!context.mounted) {
-                      return;
-                    }
-                    await Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OwnerNavbar(initialIndex: 1)),
-                      (route) => false,
-                    );
-                    setState(() {
-                      titleController.clear();
-                      descriptionController.clear();
-                      addressController.clear();
-                      landmarkController.clear();
-                      cityController.clear();
-                      stateController.clear();
-                      pinCodeController.clear();
-                      rentController.clear();
-                      depositController.clear();
-                      maintenanceController.clear();
-                      noticePeriodController.clear();
-                      totalBedController.clear();
-                      additionalController.clear();
-                      propertyImages.clear();
-                      propertyType = null;
-                      furnishingStatus = null;
-                      preferredTenant.clear();
-                      preferredGender = null;
-                      mealAvailability = null;
-                      selectedMeals.clear();
-                      selectedAmenities.clear();
-                      selectedHouseRules.clear();
-                      sharingType.clear();
-                      numberOfBedrooms = null;
-                      numberOfBathrooms = null;
-                      parkingAvailability = null;
-                      activeStep = 0;
-                    });
+                    submitProperty();
                   }
                 },
               ),
@@ -716,16 +702,16 @@ class _ListPropertyState extends State<ListProperty> {
                     controller: descriptionController,
                     maxLines: 6,
                     keyboardType: TextInputType.text,
-                    // icon: Icons.description_outlined,
+
                     hintText: "Describe about your property here",
 
-                    // validation: (value) {
-                    //   if (value == null || value.isEmpty) {
-                    //     errorType ??= "Please enter property description";
-                    //     return null;
-                    //   }
-                    //   return null;
-                    // },
+
+
+
+
+
+
+
                   ),
                 ],
               ),
@@ -779,18 +765,18 @@ class _ListPropertyState extends State<ListProperty> {
                   return null;
                 },
               ),
-              // input(
-              //   controller: cityController,
-              //   icon: Icons.location_city,
-              //   hintText: "City",
-              //   validation: (value) {
-              //     if (value == null || value.isEmpty) {
-              //       errorType ??= "Please enter city";
-              //       return null;
-              //     }
-              //     return null;
-              //   },
-              // ),
+
+
+
+
+
+
+
+
+
+
+
+
             ),
             SizedBox(width: 12),
             Flexible(
@@ -888,13 +874,13 @@ class _ListPropertyState extends State<ListProperty> {
               hintText: "Enter Total number of beds",
               icon: Icons.bed,
               keyboardType: TextInputType.number,
-              // validation: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     errorType ??= "Please enter total number of beds";
-              //     return null;
-              //   }
-              //   return null;
-              // },
+
+
+
+
+
+
+
               inputFormatters: [
                 LengthLimitingTextInputFormatter(3),
                 FilteringTextInputFormatter.digitsOnly
@@ -914,7 +900,7 @@ class _ListPropertyState extends State<ListProperty> {
                   } else {
                     sharingType.add(option);
                   }
-                  // sharingType = option;
+
                 });
               });
             }).toList(),
@@ -949,7 +935,7 @@ class _ListPropertyState extends State<ListProperty> {
                     preferredTenant.add(option);
                   }
 
-                  //preferredTenant = option;
+
                 });
               });
             }).toList(),
@@ -1012,7 +998,7 @@ class _ListPropertyState extends State<ListProperty> {
                   } else {
                     sharingType.add(option);
                   }
-                  // sharingType = option;
+
                 });
               });
             }).toList(),
@@ -1081,7 +1067,7 @@ class _ListPropertyState extends State<ListProperty> {
                     preferredTenant.add(option);
                   }
 
-                  //preferredTenant = option;
+
                 });
               });
             }).toList(),
@@ -1126,81 +1112,81 @@ class _ListPropertyState extends State<ListProperty> {
             }).toList(),
           ),
         ]
-        // else if (propertyType == "House") ...[
-        //   title("Furnishing Status"),
-        //   SizedBox(height: 8),
-        //   Wrap(
-        //     children: ["Fully Furnished", "Semi Furnished", "Unfurnished"]
-        //         .map((option) {
-        //       final isSelected = furnishingStatus == option;
-        //       return buildSelectableCard(option, isSelected, () {
-        //         setState(() {
-        //           furnishingStatus = option;
-        //         });
-        //       });
-        //     }).toList(),
-        //   ),
-        //   SizedBox(height: 16),
-        //   title("Preferred Tenant"),
-        //   SizedBox(height: 8),
-        //   Wrap(
-        //     children: ["Anyone", "Family", "Bachelor", "Company"].map((option) {
-        //       final isSelected = preferredTenant.contains(option);
-        //       return buildSelectableCard(option, isSelected, () {
-        //         setState(() {
-        //           if (isSelected) {
-        //             preferredTenant.remove(option);
-        //           } else {
-        //             preferredTenant.add(option);
-        //           }
-        //
-        //           //preferredTenant = option;
-        //         });
-        //       });
-        //     }).toList(),
-        //   ),
-        //   SizedBox(height: 16),
-        //   title("Number of Bedrooms"),
-        //   SizedBox(height: 8),
-        //   Wrap(
-        //     children: rooms.map((option) {
-        //       final isSelected = numberOfBedrooms == option;
-        //       return buildSelectableCard(option, isSelected, () {
-        //         setState(() {
-        //           numberOfBedrooms = option;
-        //         });
-        //       });
-        //     }).toList(),
-        //   ),
-        //   SizedBox(height: 16),
-        //   title("Number of Bathrooms"),
-        //   SizedBox(height: 8),
-        //   Wrap(
-        //     children: ["1", "2", "3", "4", "5+"].map((option) {
-        //       final isSelected = numberOfBathrooms == option;
-        //       return buildSelectableCard(option, isSelected, () {
-        //         setState(() {
-        //           numberOfBathrooms = option;
-        //         });
-        //       });
-        //     }).toList(),
-        //   ),
-        //   SizedBox(height: 16),
-        //   title("Parking Availability"),
-        //   SizedBox(
-        //     height: 8,
-        //   ),
-        //   Wrap(
-        //     children: ["Available", "Not Available"].map((option) {
-        //       final isSelected = parkingAvailability == option;
-        //       return buildSelectableCard(option, isSelected, () {
-        //         setState(() {
-        //           parkingAvailability = option;
-        //         });
-        //       });
-        //     }).toList(),
-        //   ),
-        // ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       ],
     );
   }
@@ -1220,7 +1206,7 @@ class _ListPropertyState extends State<ListProperty> {
           ),
           child: Column(
             children: [
-              propertyImages.isNotEmpty
+              (propertyImages.isNotEmpty || existingImages.isNotEmpty)
                   ? GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -1230,7 +1216,7 @@ class _ListPropertyState extends State<ListProperty> {
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
                       ),
-                      itemCount: propertyImages.length + 1,
+                      itemCount: propertyImages.length + existingImages.length + 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return GestureDetector(
@@ -1242,7 +1228,6 @@ class _ListPropertyState extends State<ListProperty> {
                                 border: Border.all(
                                     width: 2, color: Color(0xffF5F4F8)),
                                 borderRadius: BorderRadius.circular(10),
-                                // color: Colors.grey.shade200,
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1262,9 +1247,7 @@ class _ListPropertyState extends State<ListProperty> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
+                                  SizedBox(height: 10),
                                   Text(
                                     "Add More",
                                     style: TextStyle(
@@ -1278,6 +1261,10 @@ class _ListPropertyState extends State<ListProperty> {
                             ),
                           );
                         } else {
+                          final adjustedIndex = index - 1;
+                          final isExistingImage = adjustedIndex < existingImages.length;
+                          final imageIndex = isExistingImage ? adjustedIndex : adjustedIndex - existingImages.length;
+                          
                           return Stack(
                             clipBehavior: Clip.none,
                             children: [
@@ -1288,12 +1275,61 @@ class _ListPropertyState extends State<ListProperty> {
                                     borderRadius: BorderRadius.circular(10)),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.file(
-                                    height: 160,
-                                    width: double.infinity,
-                                    propertyImages[index - 1],
-                                    fit: BoxFit.fill,
-                                  ),
+                                  child: isExistingImage
+                                      ? Builder(
+                                          builder: (context) {
+                                            try {
+                                              final imageData = existingImages[imageIndex];
+                                              
+                                              if (imageData == null || imageData.isEmpty) {
+                                                print('Image data is null or empty at index $imageIndex');
+                                                return Container(
+                                                  height: 160,
+                                                  width: double.infinity,
+                                                  color: Colors.grey[300],
+                                                  child: Icon(Icons.image_not_supported, color: Colors.grey[600]),
+                                                );
+                                              }
+                                              
+                                              print('Displaying image at index $imageIndex');
+                                              print('Image data starts with: ${imageData.substring(0, min(30, imageData.length))}');
+                                              
+                                              if (imageData.startsWith('data:image')) {
+                                                final base64Data = imageData.split(',')[1];
+                                                print('Base64 data length: ${base64Data.length}');
+                                                return Image.memory(
+                                                  height: 160,
+                                                  width: double.infinity,
+                                                  base64Decode(base64Data),
+                                                  fit: BoxFit.fill,
+                                                );
+                                              } else {
+
+                                                print('Treating as pure base64 data');
+                                                return Image.memory(
+                                                  height: 160,
+                                                  width: double.infinity,
+                                                  base64Decode(imageData),
+                                                  fit: BoxFit.fill,
+                                                );
+                                              }
+                                            } catch (e) {
+                                              print('Error decoding image at index $imageIndex: $e');
+                                              return Container(
+                                                height: 160,
+                                                width: double.infinity,
+                                                color: Colors.grey[300],
+                                                child: Icon(Icons.image_not_supported, color: Colors.grey[600]),
+                                              );
+                                            }
+                                          },
+                                        )
+                                      : Image.file(
+                                          height: 160,
+                                          width: double.infinity,
+                                          propertyImages[imageIndex],
+                                          fit: BoxFit.fill,
+                                        ),
                                 ),
                               ),
                               Positioned(
@@ -1302,7 +1338,11 @@ class _ListPropertyState extends State<ListProperty> {
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      propertyImages.removeAt(index - 1);
+                                      if (isExistingImage) {
+                                        existingImages.removeAt(imageIndex);
+                                      } else {
+                                        propertyImages.removeAt(imageIndex);
+                                      }
                                     });
                                     commonToast("Photo removed");
                                   },
@@ -1311,10 +1351,7 @@ class _ListPropertyState extends State<ListProperty> {
                                     width: 16,
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color:
-                                            // Colors.grey,
-
-                                            Color(0xffD32F2F)),
+                                        color: Color(0xffD32F2F)),
                                     child: Center(
                                       child: Icon(
                                         Icons.close,
@@ -1344,9 +1381,7 @@ class _ListPropertyState extends State<ListProperty> {
                             showAddImageOptions(context);
                           },
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        SizedBox(height: 10),
                         Center(
                           child: Text(
                             "(Click from camera or browse to upload)",
@@ -1355,7 +1390,6 @@ class _ListPropertyState extends State<ListProperty> {
                               fontWeight: FontWeight.w500,
                               fontFamily: "Poppins",
                               color: Colors.grey.shade400,
-                              // color: Color(0xff2A2B3F),
                             ),
                           ),
                         ),
@@ -1546,5 +1580,143 @@ class _ListPropertyState extends State<ListProperty> {
             ]),
       ],
     );
+  }
+
+  Future<void> submitProperty() async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (userId.isEmpty) {
+        commonToast('User not authenticated');
+        return;
+      }
+
+
+      List<String> imageBase64List = [];
+      if (propertyImages.isNotEmpty) {
+        commonToast('Processing images...');
+        for (int i = 0; i < propertyImages.length; i++) {
+          String base64String = await convertImageToBase64(propertyImages[i]);
+          imageBase64List.add(base64String);
+        }
+      }
+
+      PropertyListing propertyListing = PropertyListing(
+                  id: widget.property?.id,
+        propertyType: propertyType,
+        title: titleController.text,
+        description: descriptionController.text,
+        address: addressController.text,
+        landmark: landmarkController.text,
+        city: city,
+        state: stateController.text,
+        pinCode: pinCodeController.text,
+        furnishingStatus: furnishingStatus,
+        preferredTenant: preferredTenant.cast<String>(),
+        preferredGender: preferredGender,
+        mealAvailability: mealAvailability,
+        selectedMeals: selectedMeals.cast<String>(),
+        sharingType: sharingType.cast<String>(),
+        numberOfBedrooms: numberOfBedrooms,
+        numberOfBathrooms: numberOfBathrooms,
+        parkingAvailability: parkingAvailability,
+        totalNumberOfBeds: totalBedController.text,
+        noticePeriod: noticePeriodController.text,
+        propertyImages: imageBase64List.isNotEmpty 
+            ? [...existingImages, ...imageBase64List] 
+            : existingImages.isNotEmpty 
+                ? existingImages 
+                : [],
+        selectedAmenities: selectedAmenities,
+        selectedHouseRules: selectedHouseRules,
+        additionalRules: additionalController.text,
+        expectedRent: rentController.text,
+        securityDeposit: depositController.text,
+        maintenanceCharges: maintenanceController.text,
+        ownerId: userId,
+        createdAt: widget.property?.createdAt ?? DateTime.now(),
+        updatedAt: DateTime.now(),
+        isActive: true,
+      );
+
+      if (widget.property != null) {
+
+        await FirebaseFirestore.instance
+            .collection('properties')
+            .doc(widget.property!.id)
+            .update(propertyListing.toFirestore());
+        
+        commonToast("Property updated successfully!");
+        
+        if (!context.mounted) return;
+        
+
+        await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => OwnerNavbar(initialIndex: 1)),
+          (route) => false,
+        );
+      } else {
+
+        await FirebaseFirestore.instance
+            .collection('properties')
+            .add(propertyListing.toFirestore());
+
+        commonToast("Property submitted successfully!");
+
+        if (!context.mounted) return;
+        
+        await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => OwnerNavbar(initialIndex: 1)),
+          (route) => false,
+        );
+
+
+        setState(() {
+          titleController.clear();
+          descriptionController.clear();
+          addressController.clear();
+          landmarkController.clear();
+          cityController.clear();
+          stateController.clear();
+          pinCodeController.clear();
+          rentController.clear();
+          depositController.clear();
+          maintenanceController.clear();
+          noticePeriodController.clear();
+          totalBedController.clear();
+          additionalController.clear();
+          propertyImages.clear();
+          propertyType = null;
+          furnishingStatus = null;
+          preferredTenant.clear();
+          preferredGender = null;
+          mealAvailability = null;
+          selectedMeals.clear();
+          selectedAmenities.clear();
+          selectedHouseRules.clear();
+          sharingType.clear();
+          numberOfBedrooms = null;
+          numberOfBathrooms = null;
+          parkingAvailability = null;
+          activeStep = 0;
+        });
+      }
+    } catch (e) {
+      commonToast('Error ${widget.property != null ? 'updating' : 'submitting'} property: $e');
+    }
+  }
+
+  Future<String> convertImageToBase64(File imageFile) async {
+    try {
+      List<int> imageBytes = await imageFile.readAsBytes();
+      String base64String = base64Encode(imageBytes);
+      return 'data:image/jpeg;base64,$base64String';
+    } catch (e) {
+      print('Error converting image to base64: $e');
+      throw Exception('Failed to convert image: $e');
+    }
   }
 }

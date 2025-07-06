@@ -45,6 +45,15 @@ dependencies:
   im_stepper: ^1.0.1+1
   easy_stepper: ^0.8.5+1
   shared_preferences: ^2.5.3
+  firebase_core: ^3.13.1
+  firebase_auth: ^5.5.4
+  cloud_firestore: ^5.6.8
+  google_sign_in: ^6.3.0
+  razorpay_flutter: ^1.4.0
+  introduction_screen: ^3.1.17
+  flutter_onboarding_slider: ^1.0.11
+  flutter_native_splash: ^2.4.4
+  firebase_storage: ^12.4.7
 
 
 dev_dependencies:
@@ -135,3 +144,9 @@ flutter:
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash7.png
+  android: true
+  ios: true

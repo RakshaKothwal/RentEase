@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rentease/common/global_widget.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../common/common_form.dart';
 
@@ -11,11 +12,29 @@ class Book extends StatefulWidget {
 }
 
 class _BookState extends State<Book> {
+  List<Map<String, String>> amenities = [
+    {"AC": "assets/svg/ac.svg"},
+    {"TV": "assets/svg/tv.svg"},
+    {"Wi-fi": "assets/svg/wifi.svg"},
+    {"Cleaning": "assets/svg/roomCleaning.svg"},
+    {"Fridge": "assets/svg/fridge.svg"},
+    {"Water Cooler": "assets/svg/water-dispenser.svg"},
+  ];
+
+  List houseRules = [
+    {"Smoking": "assets/svg/smoking.svg"},
+    {"Alcohol": "assets/svg/alcohol.svg"},
+    {"Loud Music": "assets/svg/loudMusic.svg"},
+    {"Party": "assets/svg/party.svg"},
+    {"Non Veg": "assets/svg/fish.svg"},
+    {"Visitor Entry": "assets/svg/visitor.svg"},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: appbar(data: "Enquire", showBackArrow: true, context: context),
+      appBar: appbar(data: "Book Property", showBackArrow: true, context: context),
       body: ScrollConfiguration(
         behavior: ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(

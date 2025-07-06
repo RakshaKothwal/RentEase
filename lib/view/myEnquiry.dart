@@ -21,9 +21,9 @@ class _MyenquiryState extends State<Myenquiry> {
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [
-                // SizedBox(
-                //   height: 16,
-                // ),
+
+
+
                 primaryBox(
                   child: Column(
                     children: [
@@ -39,7 +39,7 @@ class _MyenquiryState extends State<Myenquiry> {
                               "Pending",
                               style: TextStyle(
                                 color: Color(0xffF23333),
-                                // color: Colors.green,
+
                                 fontFamily: "Poppins",
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
@@ -57,9 +57,9 @@ class _MyenquiryState extends State<Myenquiry> {
                           ],
                         ),
                       ),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
+
+
+
                       Divider(
                         color: Color(0xffF5F5F5),
                         thickness: 2,
@@ -100,9 +100,9 @@ class _MyenquiryState extends State<Myenquiry> {
                                         fontFamily: "Poppins",
                                         fontWeight: FontWeight.w400),
                                   ),
-                                  // SizedBox(
-                                  //   height: 2,
-                                  // ),
+
+
+
                                   Row(children: [
                                     Icon(
                                       Icons.location_on_outlined,
@@ -158,9 +158,9 @@ class _MyenquiryState extends State<Myenquiry> {
                     ],
                   ),
                 ),
-                // SizedBox(
-                //   height: 10,
-                // ),
+
+
+
               ],
             );
           },

@@ -6,6 +6,7 @@ import 'package:rentease/view/details.dart';
 import 'package:rentease/view/message.dart';
 import 'package:rentease/view/profile.dart';
 import 'package:rentease/view/saved.dart';
+import 'package:rentease/services/chat_service.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -16,6 +17,7 @@ class Navbar extends StatefulWidget {
 
 class NavbarState extends State<Navbar> {
   final controller = PersistentTabController(initialIndex: 0);
+  final ChatService _chatService = ChatService();
   bool isNavBarVisible = true;
 
   void toggleNavBar(bool isVisible) {
@@ -47,9 +49,44 @@ class NavbarState extends State<Navbar> {
           activeColorPrimary: Color(0xffD32F2F),
           inactiveColorPrimary: Colors.black),
       PersistentBottomNavBarItem(
-          icon: Icon(
-            Icons.messenger_outline,
-            size: 26,
+          icon: StreamBuilder<int>(
+            stream: _chatService.getUnreadCount(),
+            builder: (context, snapshot) {
+              final unreadCount = snapshot.data ?? 0;
+              return Stack(
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline,
+                    size: 26,
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Color(0xffD32F2F),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Text(
+                          unreadCount > 99 ? '99+' : unreadCount.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
           title: '',
           activeColorPrimary: Color(0xffD32F2F),
@@ -88,10 +125,10 @@ class NavbarState extends State<Navbar> {
               spreadRadius: 0)
         ],
         colorBehindNavBar: Colors.white,
-        // border:
-        //     Border(top: BorderSide(color: Colors.grey.shade300, width: 0.4))
-        // borderRadius: BorderRadius.only(
-        //     topRight: Radius.circular(15), topLeft: Radius.circular(15))
+
+
+
+
       ),
     );
   }

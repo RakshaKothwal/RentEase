@@ -15,7 +15,7 @@ class _BillsState extends State<Bills> {
       backgroundColor: Color(0xffFFFFFF),
       appBar: appbar(data: "Your Bills", showBackArrow: true, context: context),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           children: [
             Expanded(

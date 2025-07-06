@@ -54,7 +54,7 @@ class _SettingState extends State<Setting> {
                   childrenPadding:
                       EdgeInsets.only(bottom: 15, left: 22, right: 22),
                   children: [
-                    // SizedBox(height: 10),
+
                     Row(
                       children: [
                         Text(
@@ -138,7 +138,7 @@ class _SettingState extends State<Setting> {
                       Icons.delete_forever_outlined,
                       color: Color(0xffD32F2F),
 
-                      // color: Color(0xffFF0000),
+
                       size: 24,
                     ),
                     SizedBox(
@@ -151,21 +151,24 @@ class _SettingState extends State<Setting> {
                             title: Text("Delete Account"),
                             contentText: "Do you want to delete the account ?",
                             successText: "Delete",
-                            successTap: () {
-                              Navigator.pop(context);
-                              PersistentNavBarNavigator.pushNewScreen(context,
-                                  screen: Signup(), withNavBar: false);
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => Login()));
-                            },
+
+
+
+
+
+
+
+
+
+
+
+
                             unsuccessText: "Cancel");
                       },
                       child: Text(
                         "Delete Account",
                         style: TextStyle(
-                            // color: Color(0xffFF0000),
+
                             color: Color(0xffD32F2F),
                             fontSize: 14,
                             fontFamily: "Poppins",
@@ -180,10 +183,10 @@ class _SettingState extends State<Setting> {
         ));
   }
 }
-//
-//       ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+
+
+
+
+
+
+

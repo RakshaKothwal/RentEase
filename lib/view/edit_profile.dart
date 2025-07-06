@@ -7,7 +7,9 @@ import '../common/global_widget.dart';
 import 'navbar.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({super.key});
+  final Map<String, dynamic>? userData;
+
+  const EditProfile({super.key, this.userData});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -15,6 +17,35 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   File? profileImage;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  String? _profileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _prefillFormData();
+  }
+
+  void _prefillFormData() {
+    if (widget.userData != null) {
+      _nameController.text =
+          widget.userData!['fullName'] ?? widget.userData!['name'] ?? '';
+      _phoneController.text = widget.userData!['phone'] ?? '';
+      _emailController.text = widget.userData!['email'] ?? '';
+      _profileImageUrl = widget.userData!['profileImage'];
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,37 +64,17 @@ class _EditProfileState extends State<EditProfile> {
                   SizedBox(
                     height: 50,
                   ),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     showDialog(
-                  //         context: context,
-                  //         builder: (BuildContext context) {
-                  //           return Dialog(
-                  //             backgroundColor: Colors.black,
-                  //             child: SizedBox(
-                  //               height:
-                  //                   MediaQuery.of(context).size.height * 0.4,
-                  //               width: double.infinity,
-                  //               child: Image.file(
-                  //                 profileImage!,
-                  //                 fit: BoxFit.contain,
-                  //               ),
-                  //             ),
-                  //           );
-                  //         });
-                  //   },
-                  //   child:
                   Center(
                     child: CircleAvatar(
                         maxRadius: 50,
                         minRadius: 50,
                         backgroundImage: profileImage != null
                             ? FileImage(profileImage!)
-                            : AssetImage(
-                                "assets/images/profile4.png",
-                              )),
+                            : _profileImageUrl != null
+                                ? NetworkImage(_profileImageUrl!)
+                                : AssetImage("assets/images/profile4.png")
+                                    as ImageProvider),
                   ),
-                  // ),
                   SizedBox(
                     height: 5,
                   ),
@@ -153,7 +164,6 @@ class _EditProfileState extends State<EditProfile> {
                                                 maxWidth: 600,
                                                 maxHeight: 600,
                                                 source: ImageSource.camera,
-                                                // imageQuality: 50
                                               );
 
                                               if (pickedImage != null) {
@@ -282,17 +292,23 @@ class _EditProfileState extends State<EditProfile> {
                     height: 35,
                   ),
                   label("Full Name"),
-                  input(hintText: "Enter your full name"),
+                  input(
+                      controller: _nameController,
+                      hintText: "Enter your full name"),
                   SizedBox(
                     height: 10,
                   ),
                   label("Phone Number"),
-                  input(hintText: "Enter your phone number"),
+                  input(
+                      controller: _phoneController,
+                      hintText: "Enter your phone number"),
                   SizedBox(
                     height: 10,
                   ),
                   label("Email"),
-                  input(hintText: "Enter your email"),
+                  input(
+                      controller: _emailController,
+                      hintText: "Enter your email"),
                   SizedBox(
                     height: 20,
                   ),

@@ -11,7 +11,7 @@ Widget header(String data) {
   );
 }
 
-// for info in myContract page
+
 Widget primaryInfo({
   required String label,
   required String value,
@@ -20,31 +20,36 @@ Widget primaryInfo({
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        //info at left side
-        Text(
-          label,
-          style: TextStyle(
-            color: Color(0xFF666666),
-            // color: Color(0xFF000000),
-            fontWeight: FontWeight.w500,
 
-            letterSpacing: 0,
-            fontSize: 13,
-            fontFamily: "Poppins",
+        SizedBox(
+          width: 120, // Fixed width for labels
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xFF666666),
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0,
+              fontSize: 13,
+              fontFamily: "Poppins",
+            ),
           ),
         ),
-        //info at right side
-        Text(
-          value,
-          style: TextStyle(
-            color: Color(0xFF000000).withAlpha((255 * 0.75).toInt()),
-            // color: Color(0xFF2D3250),
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0,
-            fontSize: 13,
-            fontFamily: "Poppins",
+        SizedBox(width: 16), // Spacing between label and value
+
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              color: Color(0xFF000000).withAlpha((255 * 0.75).toInt()),
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0,
+              fontSize: 13,
+              fontFamily: "Poppins",
+            ),
+            textAlign: TextAlign.right,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -52,7 +57,7 @@ Widget primaryInfo({
   );
 }
 
-// for other submit button in myContract page
+
 Widget secondarySubmit(
     {required String data, required void Function()? onPressed}) {
   return SizedBox(

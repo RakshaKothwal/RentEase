@@ -80,50 +80,50 @@ class _SearchState extends State<Search> {
             SizedBox(
               height: 15,
             ),
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: 48,
-            //   child: TextSelectionTheme(
-            //     data: TextSelectionThemeData(
-            //         selectionHandleColor: Color(0xffD32F2F)),
-            //     child: TextField(
-            //       style: TextStyle(
-            //           color: Colors.black,
-            //           fontSize: 16,
-            //           fontFamily: "Poppins",
-            //           fontWeight: FontWeight.w400),
-            //       // controller: searchController,
-            //       cursorColor: Color(0xffD32F2F),
-            //       decoration: InputDecoration(
-            //         contentPadding: EdgeInsets.all(10),
-            //         filled: true,
-            //         fillColor: Color(0xffF5F5F5),
-            //         // prefixIcon: Icon(
-            //         //   Icons.search,
-            //         //   color: Color(0xffA8A8A8),
-            //         //   // color: Color(0xff838383),
-            //         //   size: 24,
-            //         // ),
-            //         hintText: "Search by localities, landmark",
-            //         hintStyle: TextStyle(
-            //             // color: Color(0xff858585),
-            //             color: Color(0xffA8A8A8),
-            //             fontSize: 14,
-            //             fontFamily: "Poppins",
-            //             fontWeight: FontWeight.w400),
-            //         border: OutlineInputBorder(
-            //             borderRadius: BorderRadius.circular(10),
-            //             borderSide: BorderSide(color: Colors.transparent)),
-            //         enabledBorder: OutlineInputBorder(
-            //             borderRadius: BorderRadius.circular(10),
-            //             borderSide: BorderSide(color: Colors.transparent)),
-            //         focusedBorder: OutlineInputBorder(
-            //             borderRadius: BorderRadius.circular(10),
-            //             borderSide: BorderSide(color: Colors.transparent)),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             SizedBox(
                 width: double.infinity,
@@ -139,12 +139,12 @@ class _SearchState extends State<Search> {
                       ColorFilter.mode(Color(0xffD32F2F), BlendMode.srcIn),
                   height: 16,
                 ),
-                // Icon(
-                //   Icons.location_searching,
-                //   size: 16,
-                //   weight: 6,
-                //   color: Color(0xffD32F2F),
-                // ),
+
+
+
+
+
+
                 SizedBox(
                   width: 8,
                 ),
@@ -171,9 +171,9 @@ class _SearchState extends State<Search> {
                       children: [
                         SvgPicture.asset(
                           "assets/svg/diagonal-arrow.svg",
-                          // colorFilter: ColorFilter.mode(
-                          //     Color(0xff000000).withAlpha((255 * 0.5).toInt()),
-                          //     BlendMode.srcIn),
+
+
+
                           height: 10,
                           width: 10,
                         ),

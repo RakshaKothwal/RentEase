@@ -1,47 +1,68 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
+  final String uid;
   final String fullName;
   final String email;
-  final String phoneNumber;
-  final String password;
+  final String phone;
+  final String role;
+  final Timestamp createdAt;
 
   UserModel({
+    required this.uid,
     required this.fullName,
     required this.email,
-    required this.phoneNumber,
-    required this.password,
+    required this.phone,
+    required this.role,
+    required this.createdAt,
   });
 
   @override
   String toString() {
-    return 'UserModel(fullName: $fullName, email: $email, phoneNumber: $phoneNumber)';
+    return 'UserModel(fullName: $fullName, email: $email, phone: $phone)';
   }
 
-  // Convert a map to a UserModel instance
+
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
+      uid: map['uid'],
       fullName: map['fullName'],
       email: map['email'],
-      phoneNumber: map['phoneNumber'],
-      password: map['password'],
+      phone: map['phone'],
+      role: map['role'],
+      createdAt: map['createdAt'],
     );
   }
 
-  // Convert the UserModel instance to a JSON string
+
   String toJson() => json.encode(toMap());
 
-  // Convert a JSON string to a UserModel instance
+
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source));
 
-  // Convert UserModel to Map<String, dynamic>
+
   Map<String, dynamic> toMap() {
     return {
+      'uid': uid,
       'fullName': fullName,
       'email': email,
-      'phoneNumber': phoneNumber,
-      'password': password,
+      'phone': phone,
+      'role': role,
+      'createdAt': createdAt,
     };
+  }
+
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return UserModel(
+      uid: doc.id,
+      fullName: data['fullName'] ?? '',
+      email: data['email'] ?? '',
+      phone: data['phone'] ?? '',
+      role: data['role'] ?? 'user',
+      createdAt: data['createdAt'] ?? Timestamp.now(),
+    );
   }
 }

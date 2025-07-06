@@ -6,6 +6,7 @@ import 'package:rentease/view/bills.dart';
 import 'package:rentease/view/chat.dart';
 import 'package:rentease/view/my_contract.dart';
 import 'package:rentease/view/myreview.dart';
+import 'package:rentease/view/message.dart';
 
 class Mydormitory extends StatefulWidget {
   const Mydormitory({super.key});
@@ -60,7 +61,7 @@ class _MydormitoryState extends State<Mydormitory> {
                       height: 25,
                     ),
                     Row(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
+
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(21),
@@ -82,7 +83,7 @@ class _MydormitoryState extends State<Mydormitory> {
                               Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 4),
-                                // height: 25,
+
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     color: Color(0xffD32F2F)),
@@ -298,7 +299,7 @@ class _MydormitoryState extends State<Mydormitory> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Chat()));
+                                    builder: (context) => Message()));
                           },
                           child: dormContainer(
                               leading: SvgPicture.asset(
@@ -306,7 +307,7 @@ class _MydormitoryState extends State<Mydormitory> {
                                 height: 36,
                                 width: 30,
                               ),
-                              data: "Owner Chat"),
+                              data: "Messages"),
                         )
                       ],
                     )

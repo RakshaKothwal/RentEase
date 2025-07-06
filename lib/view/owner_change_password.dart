@@ -52,7 +52,7 @@ class _OwnerChangePasswordState extends State<OwnerChangePassword> {
               ),
               Text(
                 "Create a new password. Ensure it differs from previous ones for security",
-                // 'Please enter your current password and new password to update your account security.',
+
                 style: TextStyle(
                     color: Color(0xff989898),
                     fontSize: 13,
@@ -134,11 +134,11 @@ class _OwnerChangePasswordState extends State<OwnerChangePassword> {
                         commonToast(errorType!);
                       } else {
                         commonToast('Password updated successfully');
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   const SnackBar(
-                        //       content: Text('Password updated successfully')),
-                        // );
-                        // Navigator.pop(context);
+
+
+
+
+
                       }
                     },
                   )),

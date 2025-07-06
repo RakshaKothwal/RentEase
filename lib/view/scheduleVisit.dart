@@ -4,9 +4,13 @@ import 'package:rentease/common/common_form.dart';
 import 'package:rentease/common/global_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
 class Schedulevisit extends StatefulWidget {
-  const Schedulevisit({super.key});
+  final String propertyId;
+  const Schedulevisit({super.key, required this.propertyId});
 
   @override
   State<Schedulevisit> createState() => _SchedulevisitState();
@@ -61,67 +65,111 @@ class _SchedulevisitState extends State<Schedulevisit> {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(16),
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 80,
+                      child: FutureBuilder<DocumentSnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection('properties')
+                            .doc(widget.propertyId)
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                image: DecorationImage(
-                                  image: AssetImage("assets/images/room1.png"),
-                                  fit: BoxFit.cover,
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                          if (!snapshot.data!.exists) {
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(child: Text('Property not found.')),
+                            );
+                          }
+                          final data =
+                              snapshot.data!.data() as Map<String, dynamic>;
+                          final images = (data['propertyImages'] as List?) ?? [];
+                          final imageUrl = images.isNotEmpty &&
+                                  images[0].toString().startsWith('http')
+                              ? images[0]
+                              : 'assets/images/room1.png';
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image:
+                                          imageUrl.toString().startsWith('http')
+                                              ? NetworkImage(imageUrl)
+                                              : AssetImage(imageUrl)
+                                                  as ImageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        data['title'] ?? '',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Poppins",
+                                          color: Color(0xff000000)
+                                              .withAlpha((255 * 0.75).toInt()),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        data['city'] ?? '',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Poppins",
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        data['expectedRent'] != null
+                                            ? '₹${data['expectedRent']}/month'
+                                            : '',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: "Poppins",
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff000000)
+                                              .withAlpha((255 * 0.75).toInt()),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '3 BHK Apartment',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Poppins",
-                                      color: Color(0xff000000)
-                                          .withAlpha((255 * 0.75).toInt()),
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Koramangala, Bangalore',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "Poppins",
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    '₹35,000/month',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xff000000)
-                                          .withAlpha((255 * 0.75).toInt()),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -173,13 +221,13 @@ class _SchedulevisitState extends State<Schedulevisit> {
                                 ),
                                 calendarStyle: CalendarStyle(
                                   todayDecoration: BoxDecoration(
-                                      // color: Color(0xffD32F2F)
-                                      //     .withAlpha((255 * 0.1).toInt()),
-                                      // shape: BoxShape.circle,
+
+
+
                                       ),
                                   todayTextStyle: TextStyle(
-                                      // color: Color(0xffD32F2F),
-                                      // fontWeight: FontWeight.bold,
+
+
                                       ),
                                   selectedDecoration: BoxDecoration(
                                     color: Color(0xffD32F2F),
@@ -459,8 +507,50 @@ class _SchedulevisitState extends State<Schedulevisit> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              final userId =
+                                  FirebaseAuth.instance.currentUser?.uid;
+                              final propertyId = widget.propertyId;
+                              if (userId == null) {
+                                commonToast('User not authenticated');
+                                return;
+                              }
+                              
+                              try {
+
+                                final propertyDoc = await FirebaseFirestore.instance
+                                    .collection('properties')
+                                    .doc(propertyId)
+                                    .get();
+                                
+                                if (!propertyDoc.exists) {
+                                  commonToast('Property not found');
+                                  return;
+                                }
+                                
+                                final propertyData = propertyDoc.data() as Map<String, dynamic>;
+                                final propertyOwnerId = propertyData['ownerId'] ?? '';
+                                
+                                await FirebaseFirestore.instance
+                                    .collection('scheduledVisits')
+                                    .add({
+                                  'userId': userId,
+                                  'propertyId': propertyId,
+                                  'propertyOwnerId': propertyOwnerId,
+                                  'date': Timestamp.fromDate(selectedDay),
+                                  'timeCategory': selectedTimeOfDay,
+                                  'timeSlot': timeSlotsByCategory[
+                                      selectedTimeOfDay]![selectedIndex],
+                                  'createdAt': FieldValue.serverTimestamp(),
+                                  'status': 'pending',
+                                });
+                                
+                                                        Navigator.pop(context);
+                        Navigator.pop(context);
+                                commonToast('Visit scheduled successfully!');
+                              } catch (e) {
+                                commonToast('Failed to schedule visit. Please try again.');
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xffD32F2F),

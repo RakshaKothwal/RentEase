@@ -5,10 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../view/navbar.dart';
 
-//for horizontal padding
+
 EdgeInsets horizontalPadding = EdgeInsets.symmetric(horizontal: 16);
 
-// for title of parameters in filter page
+
 Widget title(String data) {
   return Text(
     data,
@@ -41,13 +41,13 @@ Widget otpContainer({
   );
 }
 
-//circular tab decoration for selected value
+
 Decoration selectedTab() {
   return BoxDecoration(
       color: Color(0xffD32F2F), borderRadius: BorderRadius.circular(20));
 }
 
-//circular tab decoration for unselected value
+
 Decoration unselectedTab() {
   return BoxDecoration(
     borderRadius: BorderRadius.circular(20),
@@ -55,7 +55,7 @@ Decoration unselectedTab() {
   );
 }
 
-//TextField in forms for input
+
 Widget input({
   IconData? icon,
   String? hintText,
@@ -127,20 +127,20 @@ Widget input({
   );
 }
 
-// Label of form fields
+
 Widget label(String data) {
   return Text(
     data,
     style: TextStyle(
         fontSize: 13,
-        // letterSpacing: 0,
+
         fontWeight: FontWeight.w500,
         fontFamily: "Poppins",
         color: Colors.black),
   );
 }
 
-// Submit Button in forms
+
 Widget submit(
     {required String data,
     required void Function()? onPressed,
@@ -166,7 +166,7 @@ Widget submit(
   );
 }
 
-//holds icon in the circle shape container in details page
+
 Widget iconHolder({Widget? child}) {
   return Container(
     height: 38,
@@ -181,7 +181,7 @@ Widget iconHolder({Widget? child}) {
   );
 }
 
-//for showing message through toast
+
 Future<bool?> commonToast(String msg) {
   return Fluttertoast.showToast(
     msg: msg,
@@ -189,7 +189,7 @@ Future<bool?> commonToast(String msg) {
   );
 }
 
-//for appbar
+
 PreferredSizeWidget appbar({
   BuildContext? context,
   String? data,
@@ -215,11 +215,11 @@ PreferredSizeWidget appbar({
     ),
     scrolledUnderElevation: 0,
     backgroundColor: Colors.white,
-    // titleSpacing: 0,
+
   );
 }
 
-// for containers in profile page
+
 Widget primaryBox({Widget? child}) {
   return Container(
     width: double.infinity,
@@ -234,7 +234,7 @@ Widget primaryBox({Widget? child}) {
   );
 }
 
-//common rows in container in profile page
+
 Widget primaryRow(
     {IconData? icon, required String data, void Function()? onTap}) {
   return Row(
@@ -270,7 +270,7 @@ Widget primaryRow(
   );
 }
 
-//  container in my dormitory page
+
 Widget dormContainer(
     {required Widget leading,
     required String data,
@@ -321,9 +321,9 @@ Widget search(
   return SizedBox(
     height: 48,
     child:
-        // input(
-        //     icon: Icons.search,
-        //     hintText: "Search through localities"),
+
+
+
         TextSelectionTheme(
       data: TextSelectionThemeData(selectionHandleColor: Color(0xffD32F2F)),
       child: TextField(
@@ -343,12 +343,12 @@ Widget search(
           prefixIcon: Icon(
             Icons.search,
             color: Color(0xffA8A8A8),
-            // color: Color(0xff838383),
+
             size: 24,
           ),
           hintText: hintText,
           hintStyle: TextStyle(
-              // color: Color(0xff858585),
+
               color: Color(0xffA8A8A8),
               fontSize: 14,
               fontFamily: "Poppins",
@@ -368,7 +368,7 @@ Widget search(
   );
 }
 
-// for bottomSheet
+
 Future<void> customBottomSheet({
   required BuildContext context,
   Widget? child,
@@ -383,7 +383,7 @@ Future<void> customBottomSheet({
   await showModalBottomSheet(
     isScrollControlled: true,
     backgroundColor: Colors.white,
-    // backgroundColor: Color(0xffEDEDED),
+
     context: context,
     builder: (BuildContext context) {
       return Wrap(
@@ -415,7 +415,7 @@ BoxDecoration commonDecoration() {
       ]);
 }
 
-// for  enquiry options in enquiry form
+
 Widget enquiryOption(
     {required String label,
     required String value,
@@ -425,7 +425,7 @@ Widget enquiryOption(
     children: [
       Radio<String>(
         activeColor: Color(0xffD32F2F),
-        // focusColor: Color(0xffD32F2F),
+
         value: value,
         groupValue: groupValue,
         onChanged: onChanged,
@@ -440,7 +440,7 @@ Widget enquiryOption(
   );
 }
 
-// for dialogBox
+
 Future primaryDialogBox(
     {required BuildContext context,
     String? contentText,

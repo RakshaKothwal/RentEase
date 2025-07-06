@@ -1,44 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PropertyListing {
-  // Basic Details
+
+  String? id;
+  
+
   String? propertyType;
   String? title;
   String? description;
 
-  // Location Details
+
   String? address;
   String? landmark;
   String? city;
   String? state;
   String? pinCode;
 
-  // Property Profile
+
   String? furnishingStatus;
   List<String>? preferredTenant;
   String? preferredGender;
   String? mealAvailability;
   List<String>? selectedMeals;
   List<String>? sharingType;
-  // String? sharingType;
   String? numberOfBedrooms;
   String? numberOfBathrooms;
   String? parkingAvailability;
   String? totalNumberOfBeds;
   String? noticePeriod;
 
-  // Images: store file paths or URLs
+
   List<String>? propertyImages;
 
-  // Amenities and House Rules
+
   List<String>? selectedAmenities;
   List<String>? selectedHouseRules;
   String? additionalRules;
 
-  // Pricing & Other Details
+
   String? expectedRent;
   String? securityDeposit;
   String? maintenanceCharges;
 
+
+  String? ownerId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool isActive;
+
   PropertyListing({
+    this.id,
     this.propertyType,
     this.title,
     this.description,
@@ -65,53 +76,61 @@ class PropertyListing {
     this.expectedRent,
     this.securityDeposit,
     this.maintenanceCharges,
+    this.ownerId,
+    this.createdAt,
+    this.updatedAt,
+    this.isActive = true,
   });
 
-  factory PropertyListing.fromJson(Map<String, dynamic> json) {
+  factory PropertyListing.fromFirestore(Map<String, dynamic> data, String docId) {
     return PropertyListing(
-      propertyType: json['propertyType'] as String?,
-      title: json['title'] as String?,
-      description: json['description'] as String?,
-      address: json['address'] as String?,
-      landmark: json['landmark'] as String?,
-      city: json['city'] as String?,
-      state: json['state'] as String?,
-      pinCode: json['pinCode'] as String?,
-      furnishingStatus: json['furnishingStatus'] as String?,
-      preferredTenant: json['preferredTenant'] != null
-          ? List<String>.from(json['preferredTenant'])
+      id: docId,
+      propertyType: data['propertyType'] as String?,
+      title: data['title'] as String?,
+      description: data['description'] as String?,
+      address: data['address'] as String?,
+      landmark: data['landmark'] as String?,
+      city: data['city'] as String?,
+      state: data['state'] as String?,
+      pinCode: data['pinCode'] as String?,
+      furnishingStatus: data['furnishingStatus'] as String?,
+      preferredTenant: data['preferredTenant'] != null
+          ? List<String>.from(data['preferredTenant'])
           : null,
-      preferredGender: json['preferredGender'] as String?,
-      mealAvailability: json['mealAvailability'] as String?,
-      selectedMeals: json['selectedMeals'] != null
-          ? List<String>.from(json['selectedMeals'])
+      preferredGender: data['preferredGender'] as String?,
+      mealAvailability: data['mealAvailability'] as String?,
+      selectedMeals: data['selectedMeals'] != null
+          ? List<String>.from(data['selectedMeals'])
           : null,
-      sharingType: json['sharingType'] != null
-          ? List<String>.from(json['sharingType'])
+      sharingType: data['sharingType'] != null
+          ? List<String>.from(data['sharingType'])
           : null,
-      //sharingType: json['sharingType'] as String?,
-      numberOfBedrooms: json['numberOfBedrooms'] as String?,
-      numberOfBathrooms: json['numberOfBathrooms'] as String?,
-      parkingAvailability: json['parkingAvailability'] as String?,
-      totalNumberOfBeds: json['totalNumberOfBeds'] as String?,
-      noticePeriod: json['noticePeriod'] as String?,
-      propertyImages: json['propertyImages'] != null
-          ? List<String>.from(json['propertyImages'])
+      numberOfBedrooms: data['numberOfBedrooms'] as String?,
+      numberOfBathrooms: data['numberOfBathrooms'] as String?,
+      parkingAvailability: data['parkingAvailability'] as String?,
+      totalNumberOfBeds: data['totalNumberOfBeds'] as String?,
+      noticePeriod: data['noticePeriod'] as String?,
+      propertyImages: data['propertyImages'] != null
+          ? List<String>.from(data['propertyImages'])
           : null,
-      selectedAmenities: json['selectedAmenities'] != null
-          ? List<String>.from(json['selectedAmenities'])
+      selectedAmenities: data['selectedAmenities'] != null
+          ? List<String>.from(data['selectedAmenities'])
           : null,
-      selectedHouseRules: json['selectedHouseRules'] != null
-          ? List<String>.from(json['selectedHouseRules'])
+      selectedHouseRules: data['selectedHouseRules'] != null
+          ? List<String>.from(data['selectedHouseRules'])
           : null,
-      additionalRules: json['additionalRules'] as String?,
-      expectedRent: json['expectedRent'] as String?,
-      securityDeposit: json['securityDeposit'] as String?,
-      maintenanceCharges: json['maintenanceCharges'] as String?,
+      additionalRules: data['additionalRules'] as String?,
+      expectedRent: data['expectedRent'] as String?,
+      securityDeposit: data['securityDeposit'] as String?,
+      maintenanceCharges: data['maintenanceCharges'] as String?,
+      ownerId: data['ownerId'] as String?,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+      isActive: data['isActive'] as bool? ?? true,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toFirestore() {
     return {
       'propertyType': propertyType,
       'title': title,
@@ -139,6 +158,10 @@ class PropertyListing {
       'expectedRent': expectedRent,
       'securityDeposit': securityDeposit,
       'maintenanceCharges': maintenanceCharges,
+      'ownerId': ownerId,
+      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
+      'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
+      'isActive': isActive,
     };
   }
 }

@@ -30,22 +30,22 @@ class _FilterState extends State<Filter> {
   @override
   Widget build(BuildContext context) {
     return
-        // Scaffold(
-        // backgroundColor: Colors.white,
-        // // appBar: appbar(data: "Filter"),
-        // appBar: AppBar(
-        //   titleSpacing: 0,
-        //   backgroundColor: Colors.white,
-        //   title: Text(
-        //     "Filter",
-        //     style: TextStyle(
-        //         fontSize: 20,
-        //         fontWeight: FontWeight.w500,
-        //         fontFamily: "Poppins",
-        //         color: Colors.black),
-        //   ),
-        // ),
-        // body:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         SizedBox(
       height: MediaQuery.of(context).size.height * 0.7,
       child: Column(
@@ -90,7 +90,7 @@ class _FilterState extends State<Filter> {
                       });
                     },
                     child: Container(
-                      // width: 100,
+
                       decoration: selectedIndex == index
                           ? BoxDecoration(
                               color: Color(0xffD32F2F),
@@ -160,7 +160,7 @@ class _FilterState extends State<Filter> {
                       });
                     },
                     child: Container(
-                      // width: 100,
+
                       decoration: selectedGender == index
                           ? BoxDecoration(
                               color: Color(0xffD32F2F),
@@ -273,6 +273,7 @@ class _FilterState extends State<Filter> {
           SizedBox(
             height: 25,
           ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: title("Budget"),
@@ -352,10 +353,10 @@ class _FilterState extends State<Filter> {
                 });
               }),
           Spacer(),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: submit(data: "Search", onPressed: () {}),
-          // ),
+
+
+
+
           Padding(
             padding: horizontalPadding,
             child: SizedBox(
@@ -383,6 +384,6 @@ class _FilterState extends State<Filter> {
         ],
       ),
     );
-    // );
+
   }
 }

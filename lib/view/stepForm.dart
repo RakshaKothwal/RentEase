@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:rentease/common/global_widget.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../common/common_book.dart';
 
 class Stepform extends StatefulWidget {
-  const Stepform({super.key});
+  final String? propertyId;
+  final String? propertyTitle;
+  final String? propertyOwnerId;
+  final String? propertyImage;
+  final String? propertyCity;
+  final String? propertyRent;
+
+  const Stepform({
+    super.key,
+    this.propertyId,
+    this.propertyTitle,
+    this.propertyOwnerId,
+    this.propertyImage,
+    this.propertyCity,
+    this.propertyRent,
+  });
 
   @override
   State<Stepform> createState() => _StepformState();
@@ -29,8 +47,99 @@ class _StepformState extends State<Stepform> {
   DateTime? moveInDate;
   String? duration;
   bool termsAccepted = false;
+  String? errorType;
 
   List<String> durations = ['3 months', '6 months', '12 months'];
+
+  late Razorpay razorpay;
+
+  @override
+  void initState() {
+    super.initState();
+    razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentFailure);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+  }
+
+  void handlePaymentSuccess(PaymentSuccessResponse response) {
+    _submitBooking();
+  }
+
+  void handlePaymentFailure(PaymentFailureResponse response) {
+    commonToast("Payment Failure");
+  }
+
+  void handleExternalWallet(ExternalWalletResponse response) {}
+
+  Future<void> _submitBooking() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        commonToast('Please login to book a property');
+        return;
+      }
+
+      if (nameController.text.isEmpty ||
+          phoneController.text.isEmpty ||
+          emailController.text.isEmpty ||
+          moveInDate == null ||
+          duration == null) {
+        commonToast('Please fill all required fields');
+        return;
+      }
+
+      final bookingData = {
+        'userId': userId,
+        'propertyId': widget.propertyId,
+        'propertyOwnerId': widget.propertyOwnerId,
+        'propertyName': widget.propertyTitle,
+        'userName': nameController.text.trim(),
+        'userPhone': phoneController.text.trim(),
+        'userEmail': emailController.text.trim(),
+        'moveInDate': moveInDate,
+        'duration': duration,
+        'amount': widget.propertyRent,
+        'status': 'pending',
+        'createdAt': DateTime.now(),
+        'paymentStatus': 'completed',
+        'paymentId': DateTime.now().millisecondsSinceEpoch.toString(),
+      };
+
+      await FirebaseFirestore.instance.collection('bookings').add(bookingData);
+
+      commonToast('Booking submitted successfully!');
+
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error submitting booking: $e');
+      commonToast('Failed to submit booking. Please try again.');
+    }
+  }
+
+  void openCheckout() {
+    var options = {
+      'key': 'rzp_test_47sbg0wz2GvHsm',
+
+      'amount': 100,
+      'name': 'RentEase',
+      'description': 'Property for booking',
+
+    };
+    razorpay.open(options);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+
+    super.dispose();
+    razorpay.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +203,7 @@ class _StepformState extends State<Stepform> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Star Residence Apartment",
+                                widget.propertyTitle ?? "Property",
                                 style: TextStyle(
                                   color: Colors.black
                                       .withAlpha((255 * 0.9).toInt()),
@@ -113,7 +222,7 @@ class _StepformState extends State<Stepform> {
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    "Adajan, Surat",
+                                    widget.propertyCity ?? "Location",
                                     style: TextStyle(
                                       fontFamily: "Poppins",
                                       fontSize: 12,
@@ -124,23 +233,25 @@ class _StepformState extends State<Stepform> {
                                 ],
                               ),
                               SizedBox(height: 8),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Color(0xffD32F2F),
-                                ),
-                                child: Text(
-                                  "Girls",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: "Poppins",
-                                    fontWeight: FontWeight.w400,
+                              if (widget.propertyRent != null) ...[
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Color(0xffD32F2F),
+                                  ),
+                                  child: Text(
+                                    "₹${widget.propertyRent}/month",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: "Poppins",
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ],
                           ),
                         ),
@@ -156,11 +267,73 @@ class _StepformState extends State<Stepform> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    input(hintText: "Full Name"),
+                    input(
+                      controller: nameController,
+                      hintText: "Full Name",
+                      keyboardType: TextInputType.text,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(200),
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[A-Za-z\s]'),
+                        ),
+                        FilteringTextInputFormatter.deny(RegExp(r'\s\s'))
+                      ],
+                      validation: (value) {
+                        if (value == null || value.isEmpty) {
+                          errorType ??= "Please enter your full name";
+                          return null;
+                        }
+                        return null;
+                      },
+                    ),
                     SizedBox(height: 15),
-                    input(hintText: "Phone Number"),
+                    input(
+                      hintText: "Phone Number",
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      validation: (value) {
+                        if (value == null || value.isEmpty) {
+                          errorType ??= "Phone number is required";
+                          return null;
+                        }
+
+                        if (value.length != 10) {
+                          errorType ??= "Phone number must be of 10 digits";
+                          return null;
+                        }
+                        return null;
+                      },
+                    ),
                     SizedBox(height: 15),
-                    input(hintText: "Email"),
+                    input(
+                      hintText: "Email",
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(254),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9@._-]'))
+                      ],
+                      validation: (value) {
+                        if (value == null || value.isEmpty) {
+                          errorType ??= "Email Address is required";
+
+                          return null;
+                        }
+                        final emailRegex = RegExp(
+                            r'^[A-Za-z0-9._-]+@[A-Za-z]+\.[A-Za-z]{2,}$');
+                        if (!emailRegex.hasMatch(value)) {
+                          errorType ??= "Enter a valid email address";
+
+                          return null;
+                        }
+                        return null;
+                      },
+                    ),
                     SizedBox(height: 15),
                     GestureDetector(
                       onTap: () async {
@@ -271,23 +444,36 @@ class _StepformState extends State<Stepform> {
                         fontFamily: "Poppins",
                       ),
                     ),
-                    SizedBox(height: 15),
-                    input(hintText: "Card Number"),
-                    SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: input(hintText: "MM/YY"),
-                        ),
-                        SizedBox(width: 15),
-                        Expanded(
-                          child: input(
-                            hintText: "Cvv",
-                            obscureText: true,
-                          ),
-                        ),
-                      ],
-                    ),
+                    submit(
+                        data: "Pay",
+                        onPressed: () {
+                          openCheckout();
+                        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   ],
                 ),
                 isActive: currentStep >= 1,
@@ -310,13 +496,13 @@ class _StepformState extends State<Stepform> {
                     summaryItem(
                         "Move-in Date",
                         moveInDate != null
-                            ? DateFormat('dd MMM yyyy').format(moveInDate!)
-                            : "Not selected"),
+                            ? DateFormat('dd MM yyyy').format(moveInDate!)
+                            : "Not Selected"),
                     summaryItem("Duration", duration ?? "Not selected"),
                     summaryItem("Name", nameController.text),
                     summaryItem("Phone", phoneController.text),
                     summaryItem("Email", emailController.text),
-                    summaryItem("Occupants", occupantsController.text),
+
                     SizedBox(height: 20),
                     Row(
                       children: [
@@ -344,7 +530,7 @@ class _StepformState extends State<Stepform> {
                           "I agree to the terms and conditions",
                           style: TextStyle(
                             color: Colors.black,
-                            // color: Color(0xff6C7278),
+
                             fontSize: 13, fontFamily: "Poppins",
                             fontWeight: FontWeight.w500, letterSpacing: 0,
                           ),
@@ -354,7 +540,7 @@ class _StepformState extends State<Stepform> {
                     SizedBox(
                       height: 20,
                     ),
-                    // submit(data: "Confirm booking", onPressed: () {})
+
                   ],
                 ),
                 isActive: currentStep >= 2,

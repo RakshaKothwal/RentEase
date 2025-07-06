@@ -61,12 +61,12 @@ class _ChangecityState extends State<Changecity> {
                       ColorFilter.mode(Color(0xffD32F2F), BlendMode.srcIn),
                   height: 16,
                 ),
-                // Icon(
-                //   Icons.location_searching,
-                //   size: 16,
-                //   weight: 6,
-                //   color: Color(0xffD32F2F),
-                // ),
+
+
+
+
+
+
                 SizedBox(
                   width: 8,
                 ),
@@ -94,9 +94,9 @@ class _ChangecityState extends State<Changecity> {
                       children: [
                         SvgPicture.asset(
                           "assets/svg/diagonal-arrow.svg",
-                          // colorFilter: ColorFilter.mode(
-                          //     Color(0xff000000).withAlpha((255 * 0.5).toInt()),
-                          //     BlendMode.srcIn),
+
+
+
                           height: 10,
                           width: 10,
                         ),

@@ -1,14 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:rentease/common/common_form.dart';
 import 'package:rentease/common/common_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 import '../common/global_widget.dart';
 
-class OwnerBookingDetails extends StatelessWidget {
-  const OwnerBookingDetails({super.key});
+class OwnerBookingDetails extends StatefulWidget {
+  final String bookingId;
+  final Map<String, dynamic> bookingData;
+  
+  const OwnerBookingDetails({
+    super.key, 
+    required this.bookingId,
+    required this.bookingData,
+  });
+
+  @override
+  State<OwnerBookingDetails> createState() => _OwnerBookingDetailsState();
+}
+
+class _OwnerBookingDetailsState extends State<OwnerBookingDetails> {
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    final bookingData = widget.bookingData;
+    final propertyName = bookingData['propertyName'] ?? 'Unknown Property';
+    final userName = bookingData['userName'] ?? 'Unknown User';
+    final userPhone = bookingData['userPhone'] ?? 'Not provided';
+    final userEmail = bookingData['userEmail'] ?? 'Not provided';
+    final moveInDate = bookingData['moveInDate'] as Timestamp?;
+    final duration = bookingData['duration'] ?? 'Not specified';
+    final amount = bookingData['amount']?.toString() ?? 'Not specified';
+    final status = bookingData['status'] ?? 'pending';
+    final createdAt = bookingData['createdAt'] as Timestamp?;
+    
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: appbar(
@@ -43,7 +70,7 @@ class OwnerBookingDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '3 BHK Apartment',
+                                propertyName,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -54,9 +81,9 @@ class OwnerBookingDetails extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                'Adajan, Surat',
+                                'Booking ID: ${widget.bookingId}',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: "Poppins",
                                   color: Colors.grey[600],
@@ -64,7 +91,7 @@ class OwnerBookingDetails extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                '₹35,000/month',
+                                '₹$amount/month',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: "Poppins",
@@ -81,52 +108,105 @@ class OwnerBookingDetails extends StatelessWidget {
                   ),
                   SizedBox(height: 24),
                   header("Tenant Details"),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  primaryInfo(label: "Name", value: "Raksha Kothwal"),
-                  SizedBox(
-                    height: 2,
-                  ),
+                  SizedBox(height: 16),
+                  primaryInfo(label: "Name", value: userName),
+                  SizedBox(height: 2),
+                  primaryInfo(label: "Phone", value: userPhone),
+                  SizedBox(height: 2),
+                  primaryInfo(label: "Email", value: userEmail),
+                  SizedBox(height: 50),
+                  header("Booking Details"),
+                  SizedBox(height: 16),
                   primaryInfo(
-                      label: "Phone", value: "+91 9876543210@example.com"),
-                  SizedBox(
-                    height: 2,
+                    label: "Move-in Date", 
+                    value: moveInDate != null 
+                        ? DateFormat('dd MMM yyyy').format(moveInDate.toDate())
+                        : 'Not specified'
                   ),
-                  primaryInfo(label: "Email", value: "example123@example.com"),
-                  SizedBox(
-                    height: 2,
+                  SizedBox(height: 2),
+                  primaryInfo(label: "Duration", value: duration),
+                  SizedBox(height: 2),
+                  primaryInfo(label: "Amount", value: '₹$amount'),
+                  SizedBox(height: 2),
+                  primaryInfo(
+                    label: "Booked on", 
+                    value: createdAt != null 
+                        ? DateFormat('dd MMM yyyy, hh:mm a').format(createdAt.toDate())
+                        : 'Unknown'
                   ),
-                  primaryInfo(label: "Occupation", value: "Software Engineer"),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  SizedBox(height: 24),
-                  header("Visit Details"),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  primaryInfo(label: "Date", value: "15 March 2024"),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  primaryInfo(label: "Time", value: "10:00 AM"),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  primaryInfo(label: "Status", value: "Pending"),
+                  SizedBox(height: 2),
+                  primaryInfo(label: "Status", value: status.toUpperCase()),
+                  SizedBox(height: 50),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: buildNavbar(
-            child: Row(
-          children: [
-            Expanded(child: outlinedSubmit(data: "Reject", onPressed: () {})),
-            SizedBox(width: 16),
-            Expanded(child: submit(data: "Accept", onPressed: () {})),
-          ],
-        )));
+        bottomNavigationBar: status == 'pending' 
+            ? buildNavbar(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: outlinedSubmit(
+                        data: "Reject", 
+                        onPressed: isLoading ? null : () => _updateStatus('rejected')
+                      )
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: submit(
+                        data: "Accept", 
+                        onPressed: isLoading ? null : () => _updateStatus('approved')
+                      )
+                    ),
+                  ],
+                )
+              )
+            : buildNavbar(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Booking ${status.toUpperCase()}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "Poppins",
+                      color: status == 'approved' ? Colors.green : Colors.red,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              )
+    );
+  }
+
+  Future<void> _updateStatus(String newStatus) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(widget.bookingId)
+          .update({
+        'status': newStatus,
+        'updatedAt': DateTime.now(),
+      });
+      
+      commonToast('Booking ${newStatus} successfully');
+      
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      commonToast('Failed to update booking status');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 }

@@ -5,8 +5,10 @@ import 'package:rentease/common/global_widget.dart';
 import 'package:rentease/view/changeCity.dart';
 import 'package:rentease/view/details.dart';
 import 'package:rentease/view/filter.dart';
-import 'package:rentease/view/listing.dart';
+
 import 'package:rentease/view/notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'dart:convert';
 
 import 'navbar.dart';
 
@@ -19,11 +21,28 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   TextEditingController searchController = TextEditingController();
-  List<String> propertyType = ["PG", "Hostel", "Flat", "House"];
-  int selectedIndex = -1;
+  List<String> propertyType = ["All", "PG", "Hostel", "Flat", "House"];
+  int selectedIndex = 0;
 
   List<String> occupancy = ["Single", "Twin Sharing", "Triple Sharing"];
   int occupancyIndex = -1;
+
+  String searchQuery = '';
+
+  Stream<firestore.QuerySnapshot> getPropertyStream() {
+    firestore.Query<Map<String, dynamic>> query =
+        firestore.FirebaseFirestore.instance.collection('properties');
+    if (selectedIndex > 0) {
+      query =
+          query.where('propertyType', isEqualTo: propertyType[selectedIndex]);
+    }
+    if (searchQuery.isNotEmpty) {
+      query = query
+          .where('title', isGreaterThanOrEqualTo: searchQuery)
+          .where('title', isLessThanOrEqualTo: '$searchQuery\uf8ff');
+    }
+    return query.snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,22 +79,6 @@ class _DashboardState extends State<Dashboard> {
             ],
           ),
         ),
-        // leading: SvgPicture.asset(
-        //   "assets/svg/menu.svg",
-        //   height: 24,
-        //   width: 24,
-        //   clipBehavior: Clip.hardEdge,
-        // ),
-        // titleSpacing: -5,
-        // centerTitle: true,
-        /*title: Text(
-          "RentEase",
-          style: TextStyle(
-              color: Color(0xffD32F2F),
-              fontFamily: "Montserrat",
-              fontWeight: FontWeight.w800,
-              fontSize: 24),*/
-        // ),
         actions: [
           Stack(
             children: [
@@ -114,9 +117,6 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // SizedBox(
-            //   height: 5,
-            // ),
             Padding(
               padding: horizontalPadding,
               child: Row(
@@ -125,19 +125,11 @@ class _DashboardState extends State<Dashboard> {
                   Expanded(
                     child: SizedBox(
                       height: 48,
-                      child:
-                          // input(
-                          //     icon: Icons.search,
-                          //     hintText: "Search through localities"),
-                          TextSelectionTheme(
+                      child: TextSelectionTheme(
                         data: TextSelectionThemeData(
                             selectionHandleColor: Color(0xffD32F2F)),
                         child: TextField(
                           readOnly: false,
-                          // onTap: () {
-                          //   PersistentNavBarNavigator.pushNewScreen(context,
-                          //       screen: Search(), withNavBar: false);
-                          // },
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -152,12 +144,10 @@ class _DashboardState extends State<Dashboard> {
                             prefixIcon: Icon(
                               Icons.search,
                               color: Color(0xffA8A8A8),
-                              // color: Color(0xff838383),
                               size: 24,
                             ),
                             hintText: "Search",
                             hintStyle: TextStyle(
-                                // color: Color(0xff858585),
                                 color: Color(0xffA8A8A8),
                                 fontSize: 16,
                                 fontFamily: "Poppins",
@@ -182,7 +172,6 @@ class _DashboardState extends State<Dashboard> {
                   SizedBox(
                     width: 15,
                   ),
-                  // Spacer(),
                   GestureDetector(
                     onTap: () {
                       customBottomSheet(
@@ -229,7 +218,6 @@ class _DashboardState extends State<Dashboard> {
                         });
                       },
                       child: Container(
-                        // width: 100,
                         decoration: selectedIndex == index
                             ? BoxDecoration(
                                 color: Color(0xffD32F2F),
@@ -239,13 +227,7 @@ class _DashboardState extends State<Dashboard> {
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                     color: Color(0xffECECEC), width: 1.2),
-
-                                // color: Color(0xffF5F5F5)
-                                // border: Border.all(
-                                //     color: Color(0xffB2B2B2), width: 1.3),
-                                // color: Color(0xffF5F4F8),
                               ),
-                        // color: Color(0xffB2B2B2)),
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -281,291 +263,158 @@ class _DashboardState extends State<Dashboard> {
               height: 20,
             ),
             Expanded(
-              child: ScrollConfiguration(
-                behavior: ScrollBehavior().copyWith(overscroll: false),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: horizontalPadding,
-                        child: Row(
-                          children: [
-                            Text(
-                              "Nearby Your Location",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Raleway",
-                                  color: Colors.black),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                PersistentNavBarNavigator.pushNewScreen(context,
-                                    screen: Listing(), withNavBar: false);
-                              },
-                              child: Text(
-                                "View all",
-                                style: TextStyle(
-                                    color: Color(0xffD32F2F),
-                                    // color: Color(0xffA8A8A8),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "Poppins",
-                                    fontSize: 12),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      SizedBox(
-                        height: 235,
-                        child: ScrollConfiguration(
-                          behavior:
-                              ScrollBehavior().copyWith(overscroll: false),
-                          child: ListView.separated(
-                              padding: horizontalPadding,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey.shade300),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12))),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      PersistentNavBarNavigator.pushNewScreen(
-                                          context,
-                                          screen: Details(),
-                                          withNavBar: false);
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ClipRRect(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                topRight: Radius.circular(10)),
-                                            child: Image.asset(
-                                              height: 150,
+              child: StreamBuilder<firestore.QuerySnapshot>(
+                stream: getPropertyStream(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final properties = snapshot.data!.docs;
+                  if (properties.isEmpty) {
+                    return Center(child: Text('No properties found.'));
+                  }
+                  return ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.vertical,
+                    itemCount: properties.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(height: 10);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      final data =
+                          properties[index].data() as Map<String, dynamic>;
+                      final docId = properties[index].id;
+                      return GestureDetector(
+                        onTap: () {
+                          PersistentNavBarNavigator.pushNewScreen(
+                            context,
+                            screen: Details(propertyId: docId),
+                            withNavBar: false,
+                          );
+                        },
+                        child: Container(
+                          height: 260,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: data['propertyImages'] != null &&
+                                          data['propertyImages'].isNotEmpty
+                                      ? data['propertyImages'][0]
+                                              .toString()
+                                              .startsWith('data:image')
+                                          ? Image.memory(
+                                              base64Decode(
+                                                  data['propertyImages'][0]
+                                                      .split(',')[1]),
                                               width: double.infinity,
-                                              // width: 200,
-                                              "assets/images/room1.png",
-                                              fit: BoxFit.fill,
-                                            )),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Star Paying Guest",
-                                                style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black),
-                                              ),
-                                              Text(
-                                                "Adajan, Surat",
-                                                style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.grey[600]),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.currency_rupee,
-                                                    size: 18,
-                                                    weight: 900,
-                                                    applyTextScaling: true,
-                                                    grade: 50,
-                                                    color: Color(0xff030201),
-                                                  ),
-                                                  Text(
-                                                    "15,000",
-                                                    style: TextStyle(
-                                                        fontFamily: "Poppins",
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black
-                                                            .withAlpha(230)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return SizedBox(
-                                  width: 8,
-                                );
-                              },
-                              itemCount: 5),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: horizontalPadding,
-                        child: Row(
-                          children: [
-                            Text(
-                              "Most Popular",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Raleway",
-                                  color: Colors.black),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                PersistentNavBarNavigator.pushNewScreen(context,
-                                    screen: Listing(), withNavBar: false);
-                              },
-                              child: Text(
-                                "View all",
-                                style: TextStyle(
-                                    color: Color(0xffD32F2F),
-                                    // color: Color(0xffA8A8A8),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "Poppins",
-                                    fontSize: 12),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          padding: horizontalPadding,
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {
-                                PersistentNavBarNavigator.pushNewScreen(context,
-                                    screen: Details(), withNavBar: false);
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 6, horizontal: 6),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(13),
-                                        child: Image.asset(
+                                              height: 150,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  "assets/images/room1.png",
+                                                  width: double.infinity,
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            )
+                                          : data['propertyImages'][0]
+                                                  .toString()
+                                                  .startsWith('http')
+                                              ? Image.network(
+                                                  data['propertyImages'][0],
+                                                  width: double.infinity,
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                      "assets/images/room1.png",
+                                                      width: double.infinity,
+                                                      height: 150,
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  },
+                                                )
+                                              : Image.asset(
+                                                  "assets/images/room1.png",
+                                                  width: double.infinity,
+                                                  height: 150,
+                                                  fit: BoxFit.cover,
+                                                )
+                                      : Image.asset(
                                           "assets/images/room1.png",
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                          width: 80,
-                                          fit: BoxFit.fill,
+                                          width: double.infinity,
+                                          height: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  data['title'] ?? 'No Title',
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  data['city'] ?? '',
+                                  style: TextStyle(
+                                    fontFamily: "Poppins",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                Spacer(),
+                                SizedBox(
+                                  height: 30,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.currency_rupee,
+                                        size: 18,
+                                        weight: 900,
+                                        applyTextScaling: true,
+                                        grade: 50,
+                                        color: Color(0xff030201),
+                                      ),
+                                      Text(
+                                        data['expectedRent']?.toString() ?? '-',
+                                        style: TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Star Paying Guest",
-                                            style: TextStyle(
-                                                fontFamily: "Poppins",
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black),
-                                          ),
-                                          Text(
-                                            "Adajan, Surat",
-                                            style: TextStyle(
-                                                fontFamily: "Poppins",
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey[600]),
-                                          ),
-                                          Spacer(),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.currency_rupee,
-                                                size: 18,
-                                                weight: 900,
-                                                applyTextScaling: true,
-                                                grade: 50,
-                                                color: Color(0xff030201),
-                                              ),
-                                              Text(
-                                                "15,000",
-                                                style: TextStyle(
-                                                    fontFamily: "Poppins",
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      )
+                                      Spacer(),
                                     ],
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              height: 8,
-                            );
-                          },
-                          itemCount: 3),
-                      SizedBox(
-                        height: 15,
-                      ),
-                    ],
-                  ),
-                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-            )
+            ),
           ],
         ),
       ),
